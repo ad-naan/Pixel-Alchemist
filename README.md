@@ -1,5 +1,9 @@
 # Pixel Alchemist · 像素炼金术师
 
+<p align="center">
+  <img src="assets/icon.png" width="180" alt="Pixel Alchemist icon">
+</p>
+
 Turn a folder of source images into a reproducible batch of edited static images and frame-accurate GIFs.
 
 把一批原始图片变成可重复执行、可检查、可扩展的静态图与逐帧 GIF 成品。
@@ -8,7 +12,11 @@ Pixel Alchemist is a Codex skill and Python toolkit for measuring, removing, rep
 
 Pixel Alchemist 是一个用于批量测量、擦除、替换和绘制图片元素的 Codex Skill 与 Python 工具集。它可以处理文字、图片、标志、图标、商品、价格、日期、按钮、形状、遮罩、多语种排版与自定义动画。
 
-![Pixel Alchemist English demo](examples/demo/output-en.png)
+## Rendered examples · 绘制示例
+
+| English | Arabic / RTL |
+| --- | --- |
+| ![Pixel Alchemist English demo](examples/demo/output-en.png) | ![Pixel Alchemist Arabic demo](examples/demo/output-ar.png) |
 
 The demo starts from a generated text-free background and renders English and Arabic variants through the same JSON specification. Source, configuration, outputs, and render report are available in [`examples/demo`](examples/demo).
 
@@ -37,6 +45,7 @@ pixel-alchemist/
 ├── scripts/
 │   ├── inventory_assets.py
 │   ├── measure_reference_diff.py
+│   ├── visualize_layout.py
 │   ├── check_text_runtime.py
 │   ├── render_batch.py
 │   └── validate_outputs.py
@@ -44,7 +53,11 @@ pixel-alchemist/
 │   ├── config-schema.md
 │   ├── typography-and-qa.md
 │   └── bundled-fonts.md
+├── examples/
+│   ├── demo/
+│   └── process/
 └── assets/
+    ├── icon.png
     ├── font-presets.json
     └── fonts/
 ```
@@ -111,6 +124,41 @@ Arabic and other bidirectional text require Pillow with RAQM, FriBiDi, and HarfB
 
 Every variant is written into its own folder and `render-report.json` records chosen font sizes, line breaks, element metrics, and animation metadata.
 
+## Text measurement and replacement workflow · 文字测量与改字流程
+
+![Text measurement, safe-zone planning, and replacement workflow](examples/process/process-board.png)
+
+[`examples/process`](examples/process) is a reproducible five-stage example rather than a finished-image-only showcase:
+
+1. Start with the clean production canvas.
+2. Render or collect the reference artwork containing the original copy.
+3. Compare the two images to measure the actual changed pixels. The result is stored in [`measurements.json`](examples/process/measurements.json) and shown as tight red ink bounds.
+4. Convert the observed bounds into padded layout boxes. [`04-safe-zones.json`](examples/process/04-safe-zones.json) records the usable coordinates, while the preview makes overlaps and undersized boxes visible before batch rendering.
+5. Render replacement copy through the same layout contract. Text fitting may reduce font size or wrap inside the safe box, but it cannot silently cross that box.
+
+这个样例展示的不是单纯的前后对比，而是从“看见文字”到“得到可批处理坐标”的完整过程：差分测量得到紧贴字形的实际像素范围，再结合设计留白扩展为安全绘制区域，最后使用相同配置替换文案。样例中的四个安全区域为：`kicker [194,79,468,48]`、`headline [78,138,586,190]`、`subtitle [80,344,548,82]`、`action [80,466,286,68]`。
+
+Rebuild the measurements and safe-zone preview with:
+
+```powershell
+python scripts\measure_reference_diff.py `
+  examples\process\01-clean-layout.png `
+  examples\process\02-before-text.png `
+  --output examples\process\measurements.json `
+  --preview-dir work\measurement-preview
+
+python scripts\visualize_layout.py examples\process\batch.json `
+  --background-dir examples\process `
+  --template hero --variant before `
+  --image examples\process\01-clean-layout.png `
+  --roles kicker headline subtitle action `
+  --output examples\process\04-safe-zones.png
+
+python examples\process\build_board.py
+```
+
+The measured ink box is evidence; the safe box is a layout decision. Keep both artifacts so future changes can be audited instead of relying on visual guesswork.
+
 ## Configuration model · 配置模型
 
 A template describes canvas size, background, output name, and ordered elements. A variant supplies values, language, assets, background overrides, and narrow layout exceptions.
@@ -176,7 +224,7 @@ python scripts\render_batch.py batch.json --background-dir backgrounds `
 python -m unittest tests\test_smoke.py
 ```
 
-The smoke test covers arbitrary variants, element removal, shapes, image assets, fitted text, output validation, and strict GIF metadata preservation.
+The smoke test covers arbitrary variants, element removal, shapes, image assets, fitted text, safe-zone visualization, output validation, and strict GIF metadata preservation.
 
 ## Fonts and licensing · 字体与授权
 

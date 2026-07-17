@@ -1,0 +1,47 @@
+{
+  "template": "hero",
+  "variant": "before",
+  "image": "01-clean-layout.png",
+  "safe_boxes": [
+    {
+      "role": "kicker",
+      "type": "text",
+      "box": [
+        194,
+        79,
+        468,
+        48
+      ]
+    },
+    {
+      "role": "headline",
+      "type": "text",
+      "box": [
+        78,
+        138,
+        586,
+        190
+      ]
+    },
+    {
+      "role": "subtitle",
+      "type": "text",
+      "box": [
+        80,
+        344,
+        548,
+        82
+      ]
+    },
+    {
+      "role": "action",
+      "type": "button",
+      "box": [
+        80,
+        466,
+        286,
+        68
+      ]
+    }
+  ]
+}

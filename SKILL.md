@@ -11,7 +11,7 @@ Build deterministic batches from arbitrary source images using project data, mea
 
 1. Inventory inputs with `scripts/inventory_assets.py`. Classify flat images, clean backgrounds, references, layered assets, fonts, spreadsheets, vectors, masks, and animations.
 2. Choose the safest source strategy: edit a clean/layered source; otherwise mask and reconstruct the old region before drawing replacements. Never cover old text blindly when texture or lighting must continue underneath.
-3. Measure reference-versus-clean differences with `scripts/measure_reference_diff.py`. Generate annotated previews and convert observed ink bounds into padded safe boxes.
+3. Measure reference-versus-clean differences with `scripts/measure_reference_diff.py`. Generate annotated previews and convert observed ink bounds into padded safe boxes. Visualize configured safe boxes with `scripts/visualize_layout.py` before final rendering.
 4. Extract batch data from the supplied workbook or JSON. Model each output as a generic `variant`; variants may represent languages, products, regions, dates, prices, channels, or any combination.
 5. Define templates and ordered elements in JSON using `references/config-schema.md`. Keep coordinates, copy, assets, effects, and per-variant overrides out of renderer code.
 6. Validate fonts and complex shaping with `scripts/check_text_runtime.py`. Reuse `assets/font-presets.json` when appropriate, but let project fonts override it.

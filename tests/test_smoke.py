@@ -13,6 +13,7 @@ from PIL import Image, ImageDraw, ImageSequence
 SKILL_DIR = Path(__file__).resolve().parents[1]
 RENDERER = SKILL_DIR / "scripts" / "render_batch.py"
 VALIDATOR = SKILL_DIR / "scripts" / "validate_outputs.py"
+VISUALIZER = SKILL_DIR / "scripts" / "visualize_layout.py"
 
 
 class PixelAlchemistSmokeTest(unittest.TestCase):
@@ -84,7 +85,31 @@ class PixelAlchemistSmokeTest(unittest.TestCase):
                 [sys.executable, str(RENDERER), str(config_path), "--background-dir", str(backgrounds), "--output-dir", str(output), "--force"],
                 check=True,
             )
+            safe_zone_preview = root / "safe-zones.png"
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(VISUALIZER),
+                    str(config_path),
+                    "--background-dir",
+                    str(backgrounds),
+                    "--template",
+                    "static",
+                    "--variant",
+                    "first",
+                    "--image",
+                    str(output / "first" / "static.png"),
+                    "--roles",
+                    "title",
+                    "--output",
+                    str(safe_zone_preview),
+                ],
+                check=True,
+            )
             subprocess.run([sys.executable, str(VALIDATOR), str(config_path), str(output)], check=True)
+
+            safe_zone_report = json.loads(safe_zone_preview.with_suffix(".json").read_text(encoding="utf-8"))
+            self.assertEqual(safe_zone_report["safe_boxes"], [{"role": "title", "type": "text", "box": [82, 30, 204, 62]}])
 
             with Image.open(output / "first" / "motion.gif") as rendered:
                 self.assertEqual(rendered.n_frames, 3)

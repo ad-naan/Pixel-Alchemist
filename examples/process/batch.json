@@ -1,0 +1,43 @@
+{
+  "font_preset": "@skill/assets/font-presets.json",
+  "templates": {
+    "hero": {
+      "canvas": [1200, 628],
+      "background": "../demo/background.png",
+      "output": "hero.png",
+      "elements": {
+        "glass": {"type": "rect", "z": 0, "box": [46, 44, 676, 540], "color": "#061426C7", "outline": "#2AAED366", "outline_width": 2, "radius": 34},
+        "signal": {"type": "line", "z": 10, "points": [[80, 104], [172, 104]], "color": "#50D7E8", "width": 4},
+        "kicker": {"type": "text", "z": 20, "value_key": "kicker", "box": [194, 79, 468, 48], "max_font_size": 23, "min_font_size": 15, "max_lines": 1, "weight": "bold", "align": "left", "color": "#7DE8F3"},
+        "headline": {"type": "text", "z": 30, "value_key": "headline", "box": [78, 138, 586, 190], "max_font_size": 70, "min_font_size": 36, "max_lines": 2, "line_height": 1.02, "weight": "bold", "align": "left", "color": "#FFFFFF", "shadow_offset": [3, 4], "shadow_color": "#00000088"},
+        "subtitle": {"type": "text", "z": 40, "value_key": "subtitle", "box": [80, 344, 548, 82], "max_font_size": 25, "min_font_size": 17, "max_lines": 2, "line_height": 1.15, "weight": "regular", "align": "left", "color": "#C7D7E7"},
+        "action": {"type": "button", "z": 50, "value_key": "action", "box": [80, 466, 286, 68], "max_font_size": 25, "min_font_size": 15, "max_lines": 1, "weight": "bold", "background": "#F3A64B", "text_color": "#061426", "radius": 34, "show_arrow": true, "drop_arrow_if_needed": true, "drop_arrow_below_size": 20},
+        "accent_ring": {"type": "ellipse", "z": 51, "box": [398, 478, 44, 44], "color": "#00000000", "outline": "#50D7E8", "outline_width": 3},
+        "accent_dot": {"type": "ellipse", "z": 52, "box": [414, 494, 12, 12], "color": "#50D7E8"}
+      }
+    }
+  },
+  "variants": [
+    {"id": "clean", "language": "en", "values": {}},
+    {
+      "id": "before",
+      "language": "en",
+      "values": {
+        "kicker": "REUSABLE LAYOUT",
+        "headline": "Design once, publish everywhere",
+        "subtitle": "One composition prepared for a complete batch of outputs.",
+        "action": "EXPLORE"
+      }
+    },
+    {
+      "id": "after",
+      "language": "en",
+      "values": {
+        "kicker": "PIXEL ALCHEMIST",
+        "headline": "Transform every pixel",
+        "subtitle": "Measure, replace, redraw and animate image elements at scale.",
+        "action": "START CRAFTING"
+      }
+    }
+  ]
+}
