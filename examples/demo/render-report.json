@@ -1,0 +1,208 @@
+[
+  {
+    "variant": "en",
+    "language": "en",
+    "template": "hero",
+    "input": "D:\\Project\\ai-image\\tmp\\pixel-alchemist-demo\\background.png",
+    "output": "D:\\Project\\ai-image\\tmp\\pixel-alchemist-demo\\output\\en\\hero.png",
+    "status": "rendered",
+    "metrics": {
+      "glass": {
+        "box": [
+          46,
+          44,
+          676,
+          540
+        ]
+      },
+      "signal": {
+        "points": [
+          [
+            80,
+            104
+          ],
+          [
+            172,
+            104
+          ]
+        ]
+      },
+      "kicker": {
+        "font_size": 23,
+        "lines": [
+          "PIXEL ALCHEMIST"
+        ],
+        "box": [
+          194,
+          79,
+          468,
+          48
+        ]
+      },
+      "headline": {
+        "font_size": 70,
+        "lines": [
+          "Transform",
+          "every pixel"
+        ],
+        "box": [
+          78,
+          138,
+          586,
+          190
+        ]
+      },
+      "subtitle": {
+        "font_size": 25,
+        "lines": [
+          "Measure, replace, redraw and animate",
+          "image elements at scale."
+        ],
+        "box": [
+          80,
+          344,
+          548,
+          82
+        ]
+      },
+      "action": {
+        "font_size": 22,
+        "lines": [
+          "START CRAFTING"
+        ],
+        "box": [
+          104,
+          466,
+          193,
+          68
+        ],
+        "arrow_drawn": true,
+        "button_box": [
+          80,
+          466,
+          286,
+          68
+        ]
+      },
+      "accent_ring": {
+        "box": [
+          398,
+          478,
+          44,
+          44
+        ]
+      },
+      "accent_dot": {
+        "box": [
+          414,
+          494,
+          12,
+          12
+        ]
+      }
+    }
+  },
+  {
+    "variant": "ar",
+    "language": "ar",
+    "template": "hero",
+    "input": "D:\\Project\\ai-image\\tmp\\pixel-alchemist-demo\\background.png",
+    "output": "D:\\Project\\ai-image\\tmp\\pixel-alchemist-demo\\output\\ar\\hero.png",
+    "status": "rendered",
+    "metrics": {
+      "glass": {
+        "box": [
+          46,
+          44,
+          676,
+          540
+        ]
+      },
+      "signal": {
+        "points": [
+          [
+            80,
+            104
+          ],
+          [
+            172,
+            104
+          ]
+        ]
+      },
+      "kicker": {
+        "font_size": 23,
+        "lines": [
+          "PIXEL ALCHEMIST"
+        ],
+        "box": [
+          194,
+          79,
+          468,
+          48
+        ]
+      },
+      "headline": {
+        "font_size": 60,
+        "lines": [
+          "حوّل كل بكسل",
+          "بدقة"
+        ],
+        "box": [
+          78,
+          138,
+          586,
+          190
+        ]
+      },
+      "subtitle": {
+        "font_size": 25,
+        "lines": [
+          "قياس العناصر واستبدالها وإعادة رسمها",
+          "وتحريكها على نطاق واسع."
+        ],
+        "box": [
+          80,
+          344,
+          548,
+          82
+        ]
+      },
+      "action": {
+        "font_size": 24,
+        "lines": [
+          "ابدأ المعالجة الآن"
+        ],
+        "box": [
+          104,
+          466,
+          193,
+          68
+        ],
+        "arrow_drawn": true,
+        "button_box": [
+          80,
+          466,
+          286,
+          68
+        ]
+      },
+      "accent_ring": {
+        "box": [
+          398,
+          478,
+          44,
+          44
+        ]
+      },
+      "accent_dot": {
+        "box": [
+          414,
+          494,
+          12,
+          12
+        ]
+      }
+    }
+  }
+]

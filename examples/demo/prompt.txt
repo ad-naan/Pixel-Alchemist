@@ -1,0 +1,9 @@
+Use case: ads-marketing
+Asset type: reusable image-editing toolkit demo background
+Primary request: Create a premium cinematic abstract technology studio background that can demonstrate later batch text and graphic replacement.
+Scene/backdrop: deep midnight navy environment with layered translucent glass panels, subtle teal and warm amber light ribbons, a refined reflective floor, soft atmospheric depth.
+Style/medium: high-end 3D editorial render, elegant and polished, realistic materials, sophisticated rather than cluttered.
+Composition/framing: wide landscape composition, detail concentrated around the far right edge and lower corners; preserve a large calm negative-space safe area across the left and center for later typography, buttons, icons, and shapes.
+Lighting/mood: controlled studio lighting, subtle volumetric glow, premium, confident, modern.
+Color palette: midnight blue, deep teal, cyan accents, restrained warm amber highlights.
+Constraints: no text, no letters, no numbers, no logos, no watermark, no UI screenshots, no people. Keep the image suitable for cropping to approximately 1200x628.

@@ -1,0 +1,42 @@
+{
+  "default": {
+    "regular": "@skill/assets/fonts/poppins/Poppins-Regular.ttf",
+    "bold": "@skill/assets/fonts/poppins/Poppins-Bold.ttf"
+  },
+  "en": {
+    "regular": "@skill/assets/fonts/poppins/Poppins-Regular.ttf",
+    "bold": "@skill/assets/fonts/poppins/Poppins-Bold.ttf"
+  },
+  "es": {
+    "regular": "@skill/assets/fonts/poppins/Poppins-Regular.ttf",
+    "bold": "@skill/assets/fonts/poppins/Poppins-Bold.ttf"
+  },
+  "pt": {
+    "regular": "@skill/assets/fonts/poppins/Poppins-Regular.ttf",
+    "bold": "@skill/assets/fonts/poppins/Poppins-Bold.ttf"
+  },
+  "id": {
+    "regular": "@skill/assets/fonts/poppins/Poppins-Regular.ttf",
+    "bold": "@skill/assets/fonts/poppins/Poppins-Bold.ttf"
+  },
+  "ja": {
+    "regular": "@skill/assets/fonts/line_seed_jp/LINESeedJP-Regular.ttf",
+    "bold": "@skill/assets/fonts/line_seed_jp/LINESeedJP-Bold.ttf"
+  },
+  "th": {
+    "regular": "@skill/assets/fonts/kanit/Kanit-Regular.ttf",
+    "bold": "@skill/assets/fonts/kanit/Kanit-Bold.ttf"
+  },
+  "vi": {
+    "regular": "@skill/assets/fonts/be_vietnam_pro/BeVietnamPro-Regular.ttf",
+    "bold": "@skill/assets/fonts/be_vietnam_pro/BeVietnamPro-Bold.ttf"
+  },
+  "ar": {
+    "regular": "@skill/assets/fonts/kufam/Kufam-Regular.ttf",
+    "bold": "@skill/assets/fonts/kufam/Kufam-Bold.ttf"
+  },
+  "hi": {
+    "regular": "@skill/assets/fonts/noto_sans_devanagari/NotoSansDevanagari-Regular.ttf",
+    "bold": "@skill/assets/fonts/noto_sans_devanagari/NotoSansDevanagari-Bold.ttf"
+  }
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pixel Alchemist"
+  short_description: "批量测量、擦除、替换和绘制静态图片及 GIF 中的任意元素"
+  default_prompt: "Use $pixel-alchemist to inspect the supplied images and batch-edit their elements with a reusable specification."
