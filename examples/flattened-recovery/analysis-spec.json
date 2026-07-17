@@ -1,0 +1,30 @@
+{
+  "color_tolerance": 58,
+  "safe_padding": [8, 10, 8, 10],
+  "erase_expand": 6,
+  "font_candidates": [
+    {
+      "path": "@skill/assets/fonts/poppins/Poppins-Regular.ttf",
+      "family": "Poppins",
+      "weight": "regular"
+    },
+    {
+      "path": "@skill/assets/fonts/poppins/Poppins-Bold.ttf",
+      "family": "Poppins",
+      "weight": "bold"
+    }
+  ],
+  "regions": [
+    {
+      "id": "headline",
+      "search_box": [70, 130, 610, 205],
+      "text": "Transform\nevery pixel",
+      "lines": ["Transform", "every pixel"],
+      "fill_colors": ["#FFFFFF"],
+      "min_font_size": 50,
+      "max_font_size": 78,
+      "minimum_component_area": 8,
+      "maximum_line_gap": 8
+    }
+  ]
+}

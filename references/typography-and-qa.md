@@ -7,6 +7,20 @@
 - Expand a text mask enough to include antialiasing, shadows, glows, outlines, and compression halos. Feather only when the replacement method benefits from a soft boundary.
 - Inspect the reconstructed region before drawing the new element.
 
+### Flattened-only recovery
+
+Use `analyze_flattened_text.py` when no clean background exists. Supply the narrowest reasonable `search_box`, the known original copy when available, fill/stroke/shadow colors, and candidate fonts. The script emits:
+
+- exact observed ink and effect masks;
+- glyph/effect bounding boxes and padded safe boxes;
+- per-line boxes, alignment, fill/stroke colors, and stroke-width estimates;
+- ranked font family, weight, and size matches;
+- a renderer-compatible text element draft.
+
+Font recognition is a candidate comparison, not universal font identification. Strong results require the correct text and the actual font among the candidates. OCR can provide copy and coarse boxes, but always refine its boxes with pixel masks before erasing.
+
+Run `erase_text_mask.py` with the emitted erase mask. It tests Telea, Navier-Stokes, and polynomial surface reconstruction in `auto` mode, composites only masked pixels, and fails if any outside pixel changes. A missing clean source makes the hidden background unknowable; the guarantee is therefore byte-identical pixels outside the mask plus measured seam quality, not proof of the original covered pixels.
+
 ## Font and text fitting
 
 - Use project-supplied fonts first. Validate actual glyph coverage rather than trusting a family name.
@@ -49,4 +63,4 @@ Inspect at least:
 6. Transparent output when requested.
 7. First, middle, and last animation frames plus full playback.
 
-Verify reconstruction seams, old-element remnants, safe boxes, collisions, font family and weight, line balance, image fit, z-order, opacity, rotation, masks, output dimensions, and animation metadata.
+Verify reconstruction seams, old-element remnants, safe boxes, collisions, font family and weight, measured font-match confidence, outside-mask changed-pixel count, line balance, image fit, z-order, opacity, rotation, masks, output dimensions, and animation metadata.

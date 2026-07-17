@@ -119,6 +119,18 @@ Elements render by ascending `z`; equal values retain JSON order. Set `enabled: 
 
 For `erase`, `mask_path` is a full-canvas grayscale mask; white pixels are replaced. `box` and `polygon` can be combined with the mask. Use `mask_expand` for antialiased remnants and `feather` for soft blending.
 
+Text elements may set `font_path` to use one exact font file instead of language-level font mapping. This is useful when `analyze_flattened_text.py` has matched a font candidate. Its `render_spec` output can be pasted into a template, then change `fixed_text` or replace it with `value_key` for batch variants.
+
+For a flattened-only source, generate the full-canvas mask first:
+
+```powershell
+python scripts\analyze_flattened_text.py finished.png recovery-spec.json --output-dir work\analysis
+python scripts\erase_text_mask.py finished.png work\analysis\combined-erase-mask.png `
+  --output work\cleaned.png --method auto
+```
+
+Do not replace the precise mask with its rectangular bounding box. The eraser guarantees that pixels outside the supplied mask remain byte-identical.
+
 ## Custom hooks
 
 Pass `--hook project_hook.py` when a built-in element is insufficient:

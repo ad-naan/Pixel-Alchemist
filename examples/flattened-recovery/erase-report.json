@@ -1,0 +1,18 @@
+{
+  "selected_method": "ns",
+  "candidate_boundary_scores": {
+    "telea": 0.8786,
+    "ns": 0.0,
+    "polynomial": 0.0
+  },
+  "mask_bbox": [
+    74,
+    161,
+    398,
+    145
+  ],
+  "mask_pixels": 39232,
+  "changed_inside_pixels": 25161,
+  "changed_outside_mask_pixels": 0,
+  "outside_mask_byte_identical": true
+}

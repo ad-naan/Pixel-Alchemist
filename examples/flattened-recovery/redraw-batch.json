@@ -1,0 +1,40 @@
+{
+  "fonts": {
+    "default": {
+      "regular": "@skill/assets/fonts/poppins/Poppins-Regular.ttf",
+      "bold": "@skill/assets/fonts/poppins/Poppins-Bold.ttf"
+    }
+  },
+  "templates": {
+    "recovered": {
+      "canvas": [1200, 628],
+      "background": "04-cleaned.png",
+      "output": "06-redrawn.png",
+      "elements": {
+        "headline": {
+          "type": "text",
+          "value_key": "headline",
+          "box": [72, 157, 402, 153],
+          "max_font_size": 69,
+          "min_font_size": 50,
+          "max_lines": 2,
+          "line_height": 0.93,
+          "weight": "bold",
+          "align": "left",
+          "color": "#FFFFFF",
+          "shadow_offset": [3, 4],
+          "shadow_color": "#00000088"
+        }
+      }
+    }
+  },
+  "variants": [
+    {
+      "id": "replacement",
+      "language": "en",
+      "values": {
+        "headline": "Recover\nevery detail"
+      }
+    }
+  ]
+}

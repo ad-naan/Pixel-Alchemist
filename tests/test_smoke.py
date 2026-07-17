@@ -59,7 +59,7 @@ class PixelAlchemistSmokeTest(unittest.TestCase):
                             "erase": {"type": "erase", "box": [12, 12, 70, 30], "method": "solid", "color": "#173354"},
                             "panel": {"type": "rect", "z": 10, "box": [12, 12, 296, 156], "color": "#07152ECC", "radius": 18},
                             "symbol": {"type": "image", "z": 20, "asset_key": "symbol", "box": [28, 36, 40, 40]},
-                            "title": {"type": "text", "z": 30, "value_key": "title", "box": [82, 30, 204, 62], "max_font_size": 28, "min_font_size": 16, "max_lines": 2, "weight": "bold", "align": "left", "color": "#FFFFFF"},
+                            "title": {"type": "text", "z": 30, "value_key": "title", "font_path": "@skill/assets/fonts/poppins/Poppins-Bold.ttf", "box": [82, 30, 204, 62], "max_font_size": 28, "min_font_size": 16, "max_lines": 2, "weight": "bold", "align": "left", "color": "#FFFFFF"},
                         },
                     },
                     "motion": {

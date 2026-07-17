@@ -1,0 +1,108 @@
+{
+  "image": "examples\\flattened-recovery\\01-finished-only.png",
+  "canvas": [
+    1200,
+    628
+  ],
+  "regions": [
+    {
+      "id": "headline",
+      "search_box": [
+        70,
+        130,
+        610,
+        205
+      ],
+      "ink_box": [
+        80,
+        167,
+        386,
+        133
+      ],
+      "safe_box": [
+        72,
+        157,
+        402,
+        153
+      ],
+      "line_boxes": [
+        [
+          80,
+          167,
+          386,
+          64
+        ],
+        [
+          80,
+          231,
+          386,
+          69
+        ]
+      ],
+      "fill_color": "#FFFFFF",
+      "stroke_color": null,
+      "shadow_color": null,
+      "stroke_width_estimate": 0.0,
+      "font_matches": [
+        {
+          "family": "Poppins",
+          "weight": "bold",
+          "path": "@skill/assets/fonts/poppins/Poppins-Bold.ttf",
+          "font_size": 69,
+          "score": 0.630492,
+          "shape_iou": 0.481534
+        },
+        {
+          "family": "Poppins",
+          "weight": "bold",
+          "path": "@skill/assets/fonts/poppins/Poppins-Bold.ttf",
+          "font_size": 70,
+          "score": 0.636281,
+          "shape_iou": 0.486811
+        },
+        {
+          "family": "Poppins",
+          "weight": "bold",
+          "path": "@skill/assets/fonts/poppins/Poppins-Bold.ttf",
+          "font_size": 68,
+          "score": 0.648314,
+          "shape_iou": 0.477024
+        },
+        {
+          "family": "Poppins",
+          "weight": "bold",
+          "path": "@skill/assets/fonts/poppins/Poppins-Bold.ttf",
+          "font_size": 72,
+          "score": 0.649472,
+          "shape_iou": 0.481302
+        },
+        {
+          "family": "Poppins",
+          "weight": "bold",
+          "path": "@skill/assets/fonts/poppins/Poppins-Bold.ttf",
+          "font_size": 71,
+          "score": 0.653933,
+          "shape_iou": 0.470201
+        }
+      ],
+      "render_spec": {
+        "type": "text",
+        "fixed_text": "Transform\nevery pixel",
+        "box": [
+          72,
+          157,
+          402,
+          153
+        ],
+        "max_lines": 2,
+        "align": "left",
+        "color": "#FFFFFF",
+        "font_path": "@skill/assets/fonts/poppins/Poppins-Bold.ttf",
+        "weight": "bold",
+        "max_font_size": 69,
+        "min_font_size": 69,
+        "line_height": 0.9275
+      }
+    }
+  ]
+}

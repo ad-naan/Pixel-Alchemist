@@ -64,6 +64,17 @@ def load_font(fonts: dict[str, Any], language: str, weight: str, size: int, base
     return ImageFont.truetype(str(font_path(fonts, language, weight, base_dir)), size, layout_engine=engine)
 
 
+def load_element_font(spec: dict[str, Any], fonts: dict[str, Any], language: str, weight: str, size: int, base_dir: Path) -> ImageFont.FreeTypeFont:
+    direct_path = spec.get("font_path")
+    if not direct_path:
+        return load_font(fonts, language, weight, size, base_dir)
+    path = resolve_path(str(direct_path), base_dir)
+    if not path.exists():
+        raise FileNotFoundError(f"font does not exist: {path}")
+    engine = ImageFont.Layout.RAQM if features.check("raqm") else ImageFont.Layout.BASIC
+    return ImageFont.truetype(str(path), size, layout_engine=engine)
+
+
 def load_rgba_asset(path: Path) -> Image.Image:
     if path.suffix.lower() == ".svg":
         try:
@@ -139,7 +150,7 @@ def fit_text(
     line_height = float(spec.get("line_height", 1.12))
     stroke_width = int(spec.get("stroke_width", 0))
     for size in range(int(spec["max_font_size"]), int(spec["min_font_size"]) - 1, -1):
-        font = load_font(fonts, language, weight, size, base_dir)
+        font = load_element_font(spec, fonts, language, weight, size, base_dir)
         lines = wrap_text(draw, text, font, box_width)
         if len(lines) > max_lines:
             continue

@@ -45,17 +45,21 @@ pixel-alchemist/
 ├── scripts/
 │   ├── inventory_assets.py
 │   ├── measure_reference_diff.py
+│   ├── analyze_flattened_text.py
+│   ├── erase_text_mask.py
 │   ├── visualize_layout.py
 │   ├── check_text_runtime.py
 │   ├── render_batch.py
 │   └── validate_outputs.py
 ├── references/
 │   ├── config-schema.md
+│   ├── flattened-recovery.md
 │   ├── typography-and-qa.md
 │   └── bundled-fonts.md
 ├── examples/
 │   ├── demo/
-│   └── process/
+│   ├── process/
+│   └── flattened-recovery/
 └── assets/
     ├── icon.png
     ├── font-presets.json
@@ -159,6 +163,35 @@ python examples\process\build_board.py
 
 The measured ink box is evidence; the safe box is a layout decision. Keep both artifacts so future changes can be audited instead of relying on visual guesswork.
 
+## Finished-image-only recovery · 只有成品图时恢复文字层
+
+![Flattened image text recovery, erasure, verification, and redraw](examples/flattened-recovery/flattened-recovery-board.png)
+
+[`examples/flattened-recovery`](examples/flattened-recovery) starts with one flattened finished image. No clean background is passed to the analysis or reconstruction commands. The workflow:
+
+1. Segments the actual glyph pixels inside a bounded search region.
+2. Measures the ink box, safe box, line geometry, alignment, fill color, and ranked font candidates.
+3. Expands the precise glyph mask to include antialiasing and effects without replacing it with a rectangle.
+4. Evaluates multiple reconstruction methods and changes only pixels inside that mask.
+5. Verifies that the number of changed pixels outside the mask is exactly zero.
+6. Draws replacement copy using the recovered font, weight, size, coordinates, and line-height contract.
+
+In this sample, the analyzer identifies `Poppins Bold` at approximately `69px` from an original `70px` render. [`erase-report.json`](examples/flattened-recovery/erase-report.json) records `outside_mask_byte_identical: true`. The optional clean image used during automated testing is QA ground truth only and is never read by the recovery algorithm.
+
+```powershell
+python scripts\analyze_flattened_text.py `
+  examples\flattened-recovery\01-finished-only.png `
+  examples\flattened-recovery\analysis-spec.json `
+  --output-dir work\flattened-analysis
+
+python scripts\erase_text_mask.py `
+  examples\flattened-recovery\01-finished-only.png `
+  work\flattened-analysis\combined-erase-mask.png `
+  --output work\cleaned.png --method auto
+```
+
+No algorithm can prove the original value of pixels hidden by flattened text when no clean source exists. Pixel Alchemist therefore makes the enforceable guarantee: pixels outside the approved mask remain byte-for-byte unchanged, while pixels inside it are reconstructed and scored for boundary continuity.
+
 ## Configuration model · 配置模型
 
 A template describes canvas size, background, output name, and ordered elements. A variant supplies values, language, assets, background overrides, and narrow layout exceptions.
@@ -221,10 +254,10 @@ python scripts\render_batch.py batch.json --background-dir backgrounds `
 ## Test · 测试
 
 ```powershell
-python -m unittest tests\test_smoke.py
+python -m unittest tests\test_smoke.py tests\test_flattened_recovery.py
 ```
 
-The smoke test covers arbitrary variants, element removal, shapes, image assets, fitted text, safe-zone visualization, output validation, and strict GIF metadata preservation.
+The tests cover arbitrary variants, element removal, shapes, image assets, fitted text, safe-zone visualization, flattened-image font measurement, mask-scoped reconstruction, output validation, and strict GIF metadata preservation.
 
 ## Fonts and licensing · 字体与授权
 
