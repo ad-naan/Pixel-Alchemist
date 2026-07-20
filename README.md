@@ -26,13 +26,16 @@ The demo starts from a generated text-free background and renders English and Ar
 
 - Measure changed regions between clean backgrounds and finished references, with annotated coordinate previews.
 - Batch by arbitrary variants: language, product, market, date, price, channel, or any combination.
-- Fit multilingual text with explicit semantic line breaks, font fallback, stroke, shadow, and RTL shaping.
+- Measure every landscape, portrait, square, banner, and animation template as an independent coordinate system.
+- Fit multilingual text with explicit semantic line breaks, grapheme-safe wrapping, font fallback, stroke, shadow, and RTL shaping.
+- Separate logical text direction from physical canvas alignment for mixed Arabic, Latin, numbers, and punctuation.
+- Align related elements inside one template with shared-edge groups while retaining template-specific coordinates.
 - Replace images with variant-aware fallbacks, `contain`/`cover`/`stretch`, opacity, and rotation.
 - Draw buttons, rectangles, ellipses, polygons, lines, and measured icon-text groups.
 - Remove flattened elements with solid fill, blur, masks, or OpenCV inpainting.
 - Preserve GIF frame count, per-frame timing, disposal, transparency, and loop.
 - Extend complex projects through frame hooks without forking the generic renderer.
-- Validate output coverage, dimensions, fonts, and animation metadata.
+- Validate output coverage, dimensions, fonts, alignment, spacing, overlap, readable size, and animation metadata; generate one QA grid per template.
 
 ## Repository layout · 目录结构
 
@@ -123,10 +126,14 @@ Arabic and other bidirectional text require Pillow with RAQM, FriBiDi, and HarfB
 5. Validate outputs:
 
    ```powershell
-   python scripts\validate_outputs.py batch.json output
+   python scripts\validate_outputs.py batch.json output `
+     --json-output work\validation-report.json
+
+   python scripts\build_qa_grid.py batch.json output `
+     --qa-dir work\qa --validation-report work\validation-report.json
    ```
 
-Every variant is written into its own folder and `render-report.json` records chosen font sizes, line breaks, element metrics, and animation metadata.
+Every variant is written into its own folder. `render-report.json` records chosen font sizes, line breaks, actual ink and group bounds, applied overrides, and animation metadata. The QA directory contains a labeled comparison grid for each template.
 
 ## Text measurement and replacement workflow · 文字测量与改字流程
 
@@ -194,39 +201,89 @@ No algorithm can prove the original value of pixels hidden by flattened text whe
 
 ## Configuration model · 配置模型
 
-A template describes canvas size, background, output name, and ordered elements. A variant supplies values, language, assets, background overrides, and narrow layout exceptions.
+A template describes one canvas, its independently measured coordinates, background, ordered elements, alignment groups, and QA rules. A variant supplies values, language, assets, background overrides, and narrow exceptions scoped to a named template.
 
-模板负责画布尺寸、背景、输出文件名和元素顺序；变体负责文字数据、语种、图片资产、背景覆盖与局部版式修正。因此同一套脚本既能处理多语种，也能处理不同商品、日期、价格、地区和渠道。
+模板负责自身画布尺寸、独立坐标、背景、元素顺序、对齐组和 QA 规则；变体负责文字数据、语种、图片资产、背景覆盖与指定模板内的局部修正。同名元素在横版与竖版中只代表相同语义，不代表相同坐标或等比例位置。
 
 ```json
 {
   "font_preset": "@skill/assets/font-presets.json",
   "templates": {
-    "square": {
-      "canvas": [1080, 1080],
-      "background": "square.png",
-      "output": "square.png",
+    "landscape": {
+      "canvas": [1600, 900],
+      "background": "landscape.png",
+      "output": "landscape.png",
       "elements": {
         "headline": {
           "type": "text",
           "value_key": "headline",
-          "box": [80, 120, 920, 180],
-          "max_font_size": 72,
+          "box": [84, 470, 620, 150],
+          "max_font_size": 68,
           "min_font_size": 34,
-          "max_lines": 2,
+          "max_lines": 3,
           "weight": "bold",
-          "align": "center",
+          "direction": "auto",
+          "physical_align": "left",
+          "wrap_strategy": "auto",
           "color": "#FFFFFF"
+        },
+        "date": {
+          "type": "text",
+          "value_key": "date",
+          "box": [84, 628, 500, 54],
+          "max_font_size": 42,
+          "min_font_size": 28,
+          "max_lines": 1
         }
+      },
+      "alignment_groups": {
+        "main-copy": {
+          "members": ["headline", "date"],
+          "edge": "left",
+          "anchor_role": "headline"
+        }
+      },
+      "qa": {
+        "alignment_groups": [{"roles": ["headline", "date"], "edge": "left", "metric": "ink_box", "tolerance": 2}],
+        "spacing": [{"roles": ["headline", "date"], "axis": "y", "min": 12}],
+        "elements": {"headline": {"min_font_size": 34, "max_lines": 3}}
+      }
+    },
+    "portrait": {
+      "canvas": [1080, 1350],
+      "background": "portrait.png",
+      "output": "portrait.png",
+      "elements": {
+        "headline": {"type": "text", "value_key": "headline", "box": [594, 336, 414, 150], "max_font_size": 56, "min_font_size": 32, "max_lines": 3},
+        "date": {"type": "text", "value_key": "date", "box": [594, 500, 380, 52], "max_font_size": 38, "min_font_size": 26, "max_lines": 1}
+      },
+      "alignment_groups": {
+        "main-copy": {"members": ["headline", "date"], "edge": "left", "position": 594}
       }
     }
   },
   "variants": [
-    {"id": "variant-a", "language": "en", "values": {"headline": "A new headline"}},
-    {"id": "variant-b", "language": "es", "values": {"headline": "Un nuevo titular"}}
+    {"id": "en", "language": "en", "values": {"headline": "Four days until the city innovation forum", "date": "23–24 July 2026"}},
+    {
+      "id": "ar",
+      "language": "ar",
+      "values": {"headline": "تبقّى 4 أيام حتى Hall A في 2026", "date": "23–24 يوليو 2026"},
+      "layout_overrides": {"portrait": {"headline": {"physical_align": "left"}}},
+      "alignment_overrides": {"portrait": {"main-copy": {"position": 594}}}
+    }
   ]
 }
 ```
+
+`direction` controls shaping and reading order. `physical_align` controls the visible canvas edge. They are intentionally independent: an Arabic paragraph containing a Latin event name and numbers may remain RTL while the complete block is physically left-aligned. Thai and similar scripts wrap at language segments or grapheme clusters so combining marks are never detached.
+
+Placement groups are local to one template. Each entry in the `template.alignment_groups` object uses `edge: left|right|center` plus exactly one of `anchor_role` or `position`. The separate `template.qa.alignment_groups` list asserts alignment over rendered metrics with `roles`, `edge`, `metric`, and `tolerance`; it never moves content. Use `layout_overrides[template][element]` and `alignment_overrides[template][group]` only for the affected variant and template.
+
+## Batch QA grids · 批量质检总览
+
+Generate one stable, labeled comparison grid per template after validation. Review the longest copy, smallest selected font, mixed RTL/LTR content, Thai or another grapheme-sensitive language, fallback fonts/assets, and every applied override. Automated QA should reject configured alignment, spacing, non-overlap, safe-area, minimum-font, size, and animation violations before the grid reaches human review.
+
+每个模板都应生成独立的全语种 QA 总览图。横版通过不代表竖版通过；自动检查负责拦截对齐、间距、碰撞、安全区、最小字号、尺寸和动画元数据问题，总览图用于快速发现视觉密度、断行平衡和字体观感等人工判断问题。
 
 ## Complex scenes · 复杂场景
 
@@ -254,10 +311,10 @@ python scripts\render_batch.py batch.json --background-dir backgrounds `
 ## Test · 测试
 
 ```powershell
-python -m unittest tests\test_smoke.py tests\test_flattened_recovery.py
+python -m unittest discover -s tests
 ```
 
-The tests cover arbitrary variants, element removal, shapes, image assets, fitted text, safe-zone visualization, flattened-image font measurement, mask-scoped reconstruction, output validation, and strict GIF metadata preservation.
+The tests cover arbitrary variants, independent template coordinates, template-local alignment groups, mixed RTL/LTR physical alignment, grapheme-safe Thai wrapping, icon-text grouping, layout QA, element removal, shapes, image assets, fitted text, safe-zone visualization, flattened-image font measurement, mask-scoped reconstruction, output validation, QA grids, and strict GIF metadata preservation.
 
 ## Fonts and licensing · 字体与授权
 

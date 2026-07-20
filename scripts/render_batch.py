@@ -4,11 +4,17 @@ import argparse
 import importlib.util
 import io
 import json
+import unicodedata
 from pathlib import Path
 from types import ModuleType
 from typing import Any
 
 from PIL import GifImagePlugin, Image, ImageColor, ImageDraw, ImageFilter, ImageFont, ImageSequence, features
+
+try:
+    from .layout import resolve_elements
+except ImportError:
+    from layout import resolve_elements
 
 
 def language_key(value: str) -> str:
@@ -19,11 +25,38 @@ def is_rtl(text: str) -> bool:
     return any("\u0590" <= character <= "\u08ff" for character in text)
 
 
-def text_kwargs(text: str) -> dict[str, str]:
-    if is_rtl(text):
+def resolved_direction(text: str, spec: dict[str, Any]) -> str:
+    direction = str(spec.get("direction", "auto"))
+    if direction not in {"auto", "ltr", "rtl"}:
+        raise ValueError(f"unsupported text direction: {direction!r}")
+    return "rtl" if direction == "auto" and is_rtl(text) else ("ltr" if direction == "auto" else direction)
+
+
+def physical_alignment(text: str, spec: dict[str, Any]) -> str:
+    if "physical_align" in spec:
+        align = str(spec["physical_align"])
+    else:
+        align = str(spec.get("align", "left"))
+        if align == "force-left":
+            align = "left"
+        elif is_rtl(text) and align == "left":
+            align = "right"
+    if align not in {"left", "center", "right"}:
+        raise ValueError(f"unsupported physical alignment: {align!r}")
+    return align
+
+
+def text_kwargs(text: str, language: str, spec: dict[str, Any]) -> dict[str, str]:
+    direction = resolved_direction(text, spec)
+    explicit_direction = str(spec.get("direction", "auto")) != "auto"
+    if direction == "rtl" or explicit_direction:
         if not features.check("raqm"):
-            raise RuntimeError("Arabic/RTL output requires Pillow RAQM support")
-        return {"direction": "rtl", "language": "ar"}
+            raise RuntimeError("explicit or RTL text direction requires Pillow RAQM support")
+        kwargs = {"direction": direction}
+        shaping_language = language_key(language).split("-", 1)[0]
+        if shaping_language != "default":
+            kwargs["language"] = shaping_language
+        return kwargs
     return {}
 
 
@@ -98,40 +131,74 @@ def load_rgba_asset(path: Path) -> Image.Image:
         return image.convert("RGBA")
 
 
-def measured_box(draw: ImageDraw.ImageDraw, text: str, font: ImageFont.FreeTypeFont, stroke_width: int = 0) -> tuple[int, int, int, int]:
-    return draw.textbbox((0, 0), text, font=font, stroke_width=stroke_width, **text_kwargs(text))
+def measured_box(draw: ImageDraw.ImageDraw, text: str, font: ImageFont.FreeTypeFont, language: str, spec: dict[str, Any], stroke_width: int = 0) -> tuple[int, int, int, int]:
+    return draw.textbbox((0, 0), text, font=font, stroke_width=stroke_width, **text_kwargs(text, language, spec))
 
 
-def width(draw: ImageDraw.ImageDraw, text: str, font: ImageFont.FreeTypeFont) -> int:
-    box = measured_box(draw, text, font)
+def width(draw: ImageDraw.ImageDraw, text: str, font: ImageFont.FreeTypeFont, language: str, spec: dict[str, Any]) -> int:
+    box = measured_box(draw, text, font, language, spec)
     return box[2] - box[0]
 
 
-def wrap_paragraph(draw: ImageDraw.ImageDraw, paragraph: str, font: ImageFont.FreeTypeFont, max_width: int) -> list[str]:
-    if not paragraph:
-        return [""]
-    words = paragraph.split()
-    use_words = len(words) > 1 and all(width(draw, word, font) <= max_width for word in words)
-    units = words if use_words else list(paragraph)
-    separator = " " if use_words else ""
+def is_variation_selector(character: str) -> bool:
+    value = ord(character)
+    return 0xFE00 <= value <= 0xFE0F or 0xE0100 <= value <= 0xE01EF
+
+
+def grapheme_clusters(text: str) -> list[str]:
+    clusters: list[str] = []
+    for character in text:
+        extends_previous = bool(clusters) and (
+            unicodedata.combining(character) != 0
+            or unicodedata.category(character).startswith("M")
+            or is_variation_selector(character)
+            or character == "\u200d"
+            or clusters[-1].endswith("\u200d")
+        )
+        if extends_previous:
+            clusters[-1] += character
+        else:
+            clusters.append(character)
+    return clusters
+
+
+def wrap_units(draw: ImageDraw.ImageDraw, units: list[str], separator: str, font: ImageFont.FreeTypeFont, max_width: int, language: str, spec: dict[str, Any]) -> list[str]:
     lines: list[str] = []
     current = ""
     for unit in units:
         candidate = unit if not current else f"{current}{separator}{unit}"
-        if current and width(draw, candidate, font) > max_width:
-            lines.append(current)
-            current = unit
+        if current and width(draw, candidate, font, language, spec) > max_width:
+            lines.append(current.rstrip())
+            current = unit.lstrip() if not separator else unit
         else:
             current = candidate
     if current:
-        lines.append(current)
+        lines.append(current.rstrip())
     return lines or [""]
 
 
-def wrap_text(draw: ImageDraw.ImageDraw, text: str, font: ImageFont.FreeTypeFont, max_width: int) -> list[str]:
+def wrap_paragraph(draw: ImageDraw.ImageDraw, paragraph: str, font: ImageFont.FreeTypeFont, max_width: int, language: str, spec: dict[str, Any]) -> list[str]:
+    if not paragraph:
+        return [""]
+    strategy = str(spec.get("wrap_strategy", "auto"))
+    if strategy not in {"auto", "word", "grapheme", "manual"}:
+        raise ValueError(f"unsupported wrap strategy: {strategy!r}")
+    if strategy == "manual":
+        return [paragraph]
+    words = paragraph.split()
+    use_words = strategy == "word" or (
+        strategy == "auto"
+        and len(words) > 1
+        and all(width(draw, word, font, language, spec) <= max_width for word in words)
+    )
+    units = words if use_words else grapheme_clusters(paragraph)
+    return wrap_units(draw, units, " " if use_words else "", font, max_width, language, spec)
+
+
+def wrap_text(draw: ImageDraw.ImageDraw, text: str, font: ImageFont.FreeTypeFont, max_width: int, language: str, spec: dict[str, Any]) -> list[str]:
     lines: list[str] = []
     for paragraph in text.splitlines() or [""]:
-        lines.extend(wrap_paragraph(draw, paragraph, font, max_width))
+        lines.extend(wrap_paragraph(draw, paragraph, font, max_width, language, spec))
     return lines
 
 
@@ -151,10 +218,10 @@ def fit_text(
     stroke_width = int(spec.get("stroke_width", 0))
     for size in range(int(spec["max_font_size"]), int(spec["min_font_size"]) - 1, -1):
         font = load_element_font(spec, fonts, language, weight, size, base_dir)
-        lines = wrap_text(draw, text, font, box_width)
+        lines = wrap_text(draw, text, font, box_width, language, spec)
         if len(lines) > max_lines:
             continue
-        boxes = [measured_box(draw, line, font, stroke_width) for line in lines]
+        boxes = [measured_box(draw, line, font, language, spec, stroke_width) for line in lines]
         line_widths = [box[2] - box[0] for box in boxes]
         line_heights = [box[3] - box[1] for box in boxes]
         gap = max(0, round(size * (line_height - 1.0)))
@@ -187,13 +254,13 @@ def draw_text_element(
     fit = fit_text(draw, text=text, language=language, spec=spec, fonts=fonts, base_dir=base_dir)
     x, y, box_width, box_height = fit["box"]
     cursor_y = y + (box_height - fit["total_height"]) / 2
-    align = str(spec.get("align", "left"))
-    if is_rtl(text) and align == "left":
-        align = "right"
+    align = physical_alignment(text, spec)
+    direction = resolved_direction(text, spec)
     stroke_width = int(spec.get("stroke_width", 0))
     shadow_offset = spec.get("shadow_offset", [0, 0])
     shadow_x, shadow_y = (int(value) for value in shadow_offset)
     shadow_fill = spec.get("shadow_color")
+    line_boxes = []
     for line, box, line_width, line_height in zip(fit["lines"], fit["boxes"], fit["line_widths"], fit["line_heights"]):
         if align == "center":
             draw_x = x + (box_width - line_width) / 2
@@ -202,6 +269,7 @@ def draw_text_element(
         else:
             draw_x = x
         position = (draw_x - box[0], cursor_y - box[1])
+        line_boxes.append([round(draw_x), round(cursor_y), line_width, line_height])
         if shadow_fill and (shadow_x or shadow_y):
             draw.text(
                 (position[0] + shadow_x, position[1] + shadow_y),
@@ -210,7 +278,7 @@ def draw_text_element(
                 fill=shadow_fill,
                 stroke_width=stroke_width,
                 stroke_fill=shadow_fill,
-                **text_kwargs(line),
+                **text_kwargs(text, language, spec),
             )
         draw.text(
             position,
@@ -219,10 +287,31 @@ def draw_text_element(
             fill=spec.get("color", "#FFFFFF"),
             stroke_width=stroke_width,
             stroke_fill=spec.get("stroke_color", spec.get("color", "#FFFFFF")),
-            **text_kwargs(line),
+            **text_kwargs(text, language, spec),
         )
         cursor_y += line_height + fit["gap"]
-    return {"font_size": fit["font_size"], "lines": fit["lines"], "box": fit["box"]}
+    ink_left = min(box[0] for box in line_boxes)
+    ink_top = min(box[1] for box in line_boxes)
+    ink_right = max(box[0] + box[2] for box in line_boxes)
+    ink_bottom = max(box[1] + box[3] for box in line_boxes)
+    max_font_size = int(spec["max_font_size"])
+    max_lines = int(spec.get("max_lines", 1))
+    return {
+        "box": fit["box"],
+        "safe_box": fit["box"],
+        "ink_box": [ink_left, ink_top, ink_right - ink_left, ink_bottom - ink_top],
+        "line_boxes": line_boxes,
+        "font_size": fit["font_size"],
+        "max_font_size": max_font_size,
+        "font_scale": fit["font_size"] / max_font_size,
+        "lines": fit["lines"],
+        "line_count": len(fit["lines"]),
+        "max_lines": max_lines,
+        "content_height": fit["total_height"],
+        "height_density": fit["total_height"] / box_height,
+        "direction": direction,
+        "physical_align": align,
+    }
 
 
 def paste_asset(
@@ -243,7 +332,7 @@ def paste_asset(
     if fit == "stretch":
         resized = asset.resize((box_width, box_height), Image.Resampling.LANCZOS)
         canvas.alpha_composite(resized, (x, y))
-        return {"box": [x, y, box_width, box_height], "rendered_size": [box_width, box_height], "fit": fit, "opacity": opacity, "rotation": rotation}
+        return {"box": [x, y, box_width, box_height], "safe_box": [x, y, box_width, box_height], "ink_box": [x, y, box_width, box_height], "rendered_size": [box_width, box_height], "fit": fit, "opacity": opacity, "rotation": rotation}
     if fit not in {"contain", "cover"}:
         raise ValueError(f"unsupported image fit: {fit}")
     scale_fn = min if fit == "contain" else max
@@ -258,7 +347,8 @@ def paste_asset(
     else:
         position = (x + (box_width - size[0]) // 2, y + (box_height - size[1]) // 2)
     canvas.alpha_composite(resized, position)
-    return {"box": [x, y, box_width, box_height], "rendered_size": list(resized.size), "fit": fit, "opacity": opacity, "rotation": rotation}
+    rendered_box = [position[0], position[1], resized.width, resized.height]
+    return {"box": [x, y, box_width, box_height], "safe_box": [x, y, box_width, box_height], "ink_box": rendered_box, "rendered_size": list(resized.size), "fit": fit, "opacity": opacity, "rotation": rotation}
 
 
 def draw_icon_text(
@@ -275,32 +365,45 @@ def draw_icon_text(
     x, y, box_width, box_height = (int(value) for value in spec["box"])
     icon_width, icon_height = (int(value) for value in spec["icon_size"])
     gap = int(spec.get("icon_gap", 8))
-    text_spec = {**spec, "box": [0, 0, box_width - icon_width - gap, box_height], "align": "force-left"}
+    text_spec = {**spec, "box": [0, 0, box_width - icon_width - gap, box_height], "physical_align": "left"}
     fit = fit_text(ImageDraw.Draw(canvas), text=text, language=language, spec=text_spec, fonts=fonts, base_dir=base_dir)
     text_width = max(fit["line_widths"])
     group_width = icon_width + gap + text_width
-    group_align = str(spec.get("group_align", "left"))
+    group_align = str(spec.get("physical_align", spec.get("group_align", "left")))
+    if group_align == "force-left":
+        group_align = "left"
+    if group_align not in {"left", "center", "right"}:
+        raise ValueError(f"unsupported icon-text physical alignment: {group_align!r}")
     if group_align == "right":
         group_x = x + box_width - group_width
     elif group_align == "center":
         group_x = x + (box_width - group_width) / 2
     else:
         group_x = x
+    direction = resolved_direction(text, spec)
     icon_side = str(spec.get("icon_side", "left"))
     if icon_side == "start":
-        icon_side = "right" if is_rtl(text) else "left"
+        icon_side = "right" if direction == "rtl" else "left"
     elif icon_side == "end":
-        icon_side = "left" if is_rtl(text) else "right"
+        icon_side = "left" if direction == "rtl" else "right"
     if icon_side == "right":
         text_x = group_x
         icon_x = group_x + text_width + gap
     else:
         icon_x = group_x
         text_x = group_x + icon_width + gap
-    paste_asset(canvas, icon, [round(icon_x), y + (box_height - icon_height) // 2, icon_width, icon_height])
-    draw_spec = {**spec, "box": [round(text_x), y, max(1, round(text_width + 2)), box_height]}
+    icon_box = [round(icon_x), y + (box_height - icon_height) // 2, icon_width, icon_height]
+    paste_asset(canvas, icon, icon_box)
+    text_box = [round(text_x), y, max(1, round(text_width + 2)), box_height]
+    draw_spec = {**spec, "box": text_box, "physical_align": "left"}
     metrics = draw_text_element(canvas, text=text, language=language, spec=draw_spec, fonts=fonts, base_dir=base_dir)
+    metrics["box"] = [x, y, box_width, box_height]
+    metrics["safe_box"] = [x, y, box_width, box_height]
     metrics["group_box"] = [round(group_x), y, round(group_width), box_height]
+    metrics["icon_box"] = icon_box
+    metrics["text_box"] = text_box
+    metrics["direction"] = direction
+    metrics["physical_align"] = group_align
     return metrics
 
 
@@ -313,7 +416,7 @@ def draw_rect(canvas: Image.Image, spec: dict[str, Any]) -> dict[str, Any]:
     radius = int(spec.get("radius", 0))
     xy = (x, y, x + box_width, y + box_height)
     draw.rounded_rectangle(xy, radius=radius, fill=fill, outline=outline, width=int(spec.get("outline_width", 1)))
-    return {"box": [x, y, box_width, box_height]}
+    return {"box": [x, y, box_width, box_height], "safe_box": [x, y, box_width, box_height], "ink_box": [x, y, box_width, box_height]}
 
 
 def draw_shape(canvas: Image.Image, kind: str, spec: dict[str, Any]) -> dict[str, Any]:
@@ -326,7 +429,7 @@ def draw_shape(canvas: Image.Image, kind: str, spec: dict[str, Any]) -> dict[str
     if kind == "ellipse":
         x, y, width, height = (int(value) for value in spec["box"])
         draw.ellipse((x, y, x + width, y + height), fill=fill, outline=outline, width=line_width)
-        return {"box": [x, y, width, height]}
+        return {"box": [x, y, width, height], "safe_box": [x, y, width, height], "ink_box": [x, y, width, height]}
     points = [(int(point[0]), int(point[1])) for point in spec["points"]]
     if kind == "polygon":
         draw.polygon(points, fill=fill, outline=outline)
@@ -334,7 +437,11 @@ def draw_shape(canvas: Image.Image, kind: str, spec: dict[str, Any]) -> dict[str
         draw.line(points, fill=outline or fill, width=line_width, joint=str(spec.get("joint", "curve")))
     else:
         raise ValueError(f"unsupported shape: {kind}")
-    return {"points": [list(point) for point in points]}
+    left = min(point[0] for point in points)
+    top = min(point[1] for point in points)
+    right = max(point[0] for point in points)
+    bottom = max(point[1] for point in points)
+    return {"points": [list(point) for point in points], "ink_box": [left, top, right - left, bottom - top]}
 
 
 def region_mask(canvas: Image.Image, spec: dict[str, Any], base_dir: Path) -> Image.Image:
@@ -474,11 +581,6 @@ def variant_identifier(variant: dict[str, Any]) -> str:
     return str(variant.get("id") or variant.get("language") or "default")
 
 
-def merged_spec(template_name: str, role: str, spec: dict[str, Any], variant: dict[str, Any]) -> dict[str, Any]:
-    template_overrides = variant.get("layout_overrides", {}).get(template_name, {})
-    return {**spec, **template_overrides.get(role, {})}
-
-
 def resolved_assets(asset_catalog: dict[str, Any], variant: dict[str, Any]) -> dict[str, Any]:
     language = language_key(str(variant.get("language", "default")))
     base = language.split("-", 1)[0]
@@ -510,12 +612,14 @@ def render_frame(
     values = variant.get("values", variant.get("copy", {}))
     assets = resolved_assets(asset_catalog, variant)
     metrics = {}
+    resolved_element_specs = resolve_elements(template_name, template, variant)
     context = {
         "variant": variant,
         "variant_id": variant_identifier(variant),
         "language": language,
         "template_name": template_name,
         "template": template,
+        "resolved_elements": resolved_element_specs,
         "values": values,
         "copy": values,
         "assets": assets,
@@ -526,10 +630,9 @@ def render_frame(
     }
     if hook and callable(getattr(hook, "before_frame", None)):
         hook.before_frame(canvas, context)
-    ordered_elements = list(template.get("elements", {}).items())
-    ordered_elements.sort(key=lambda item: int(merged_spec(template_name, item[0], item[1], variant).get("z", 0)))
-    for role, raw_spec in ordered_elements:
-        spec = merged_spec(template_name, role, raw_spec, variant)
+    ordered_elements = list(resolved_element_specs.items())
+    ordered_elements.sort(key=lambda item: int(item[1].get("z", 0)))
+    for role, spec in ordered_elements:
         if not bool(spec.get("enabled", True)):
             continue
         kind = str(spec["type"])

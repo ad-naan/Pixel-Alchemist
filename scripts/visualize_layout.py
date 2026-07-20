@@ -7,6 +7,11 @@ from typing import Any
 
 from PIL import Image, ImageColor, ImageDraw, ImageFont
 
+try:
+    from .layout import resolve_elements
+except ImportError:
+    from layout import resolve_elements
+
 
 PALETTE = ["#40E0D0", "#FFB347", "#FF6B8A", "#8FA8FF", "#B7E36B", "#D58BFF", "#66C7FF"]
 
@@ -15,9 +20,18 @@ def variant_id(item: dict[str, Any]) -> str:
     return str(item.get("id") or item.get("language") or "default")
 
 
-def merged_spec(template_name: str, role: str, spec: dict[str, Any], variant: dict[str, Any]) -> dict[str, Any]:
-    overrides = variant.get("layout_overrides", {}).get(template_name, {})
-    return {**spec, **overrides.get(role, {})}
+def load_report_row(path: Path | None, template: str, variant: str) -> dict[str, Any] | None:
+    if path is None or not path.exists():
+        return None
+    rows = json.loads(path.read_text(encoding="utf-8"))
+    return next((row for row in rows if str(row.get("template")) == template and str(row.get("variant")) == variant), None)
+
+
+def load_violations(path: Path | None, template: str, variant: str) -> list[dict[str, Any]]:
+    if path is None or not path.exists():
+        return []
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    return [item for item in payload.get("violations", []) if str(item.get("template")) == template and str(item.get("variant")) == variant]
 
 
 def main() -> None:
@@ -28,6 +42,8 @@ def main() -> None:
     parser.add_argument("--template", required=True)
     parser.add_argument("--variant", default="default")
     parser.add_argument("--image", type=Path, help="Optional image override, such as a clean rendered layout.")
+    parser.add_argument("--report", type=Path, help="Optional render-report.json; overlays actual ink and compound-group bounds.")
+    parser.add_argument("--validation-report", type=Path, help="Optional validator JSON; highlights roles involved in failed rules.")
     parser.add_argument("--roles", nargs="*", help="Only visualize these element roles.")
     parser.add_argument("--types", nargs="*", default=["text", "icon_text", "button", "image", "erase"])
     parser.add_argument("--fill-alpha", type=int, default=38)
@@ -56,9 +72,13 @@ def main() -> None:
     label_font = ImageFont.load_default(size=max(12, round(min(canvas.size) / 45)))
     selected_roles = set(args.roles) if args.roles else None
     selected_types = set(args.types)
-    report = []
-    for index, (role, raw_spec) in enumerate(template.get("elements", {}).items()):
-        spec = merged_spec(args.template, role, raw_spec, variant)
+    report_row = load_report_row(args.report, args.template, args.variant)
+    actual_metrics = report_row.get("metrics", {}) if report_row else {}
+    violations = load_violations(args.validation_report, args.template, args.variant)
+    failed_roles = {str(role) for item in violations for role in item.get("roles", [])}
+    resolved_specs = resolve_elements(args.template, template, variant)
+    safe_boxes = []
+    for index, (role, spec) in enumerate(resolved_specs.items()):
         kind = str(spec.get("type", ""))
         if not spec.get("enabled", True) or "box" not in spec or kind not in selected_types:
             continue
@@ -67,7 +87,7 @@ def main() -> None:
         x, y, width, height = (int(value) for value in spec["box"])
         color = ImageColor.getcolor(PALETTE[index % len(PALETTE)], "RGBA")
         fill = (color[0], color[1], color[2], max(0, min(255, args.fill_alpha)))
-        outline = (color[0], color[1], color[2], 255)
+        outline = (220, 35, 35, 255) if role in failed_roles else (color[0], color[1], color[2], 255)
         draw.rectangle((x, y, x + width, y + height), fill=fill, outline=outline, width=args.line_width)
         label = f"{role}  [{x}, {y}, {width}, {height}]"
         label_box = draw.textbbox((0, 0), label, font=label_font)
@@ -76,17 +96,43 @@ def main() -> None:
         label_y = y - label_height if y >= label_height else y
         draw.rounded_rectangle((x, label_y, min(canvas.width, x + label_width), label_y + label_height), radius=5, fill=(5, 14, 28, 225))
         draw.text((x + 6, label_y + 4 - label_box[1]), label, font=label_font, fill=outline)
-        report.append({"role": role, "type": kind, "box": [x, y, width, height]})
+        item = {"role": role, "type": kind, "box": [x, y, width, height]}
+        metrics = actual_metrics.get(role, {}) if isinstance(actual_metrics, dict) else {}
+        for metric_name, metric_color in (("ink_box", (255, 255, 255, 255)), ("group_box", (255, 72, 72, 255))):
+            metric_box = metrics.get(metric_name) if isinstance(metrics, dict) else None
+            if isinstance(metric_box, list) and len(metric_box) == 4:
+                mx, my, mw, mh = (int(round(value)) for value in metric_box)
+                draw.rectangle((mx, my, mx + mw, my + mh), outline=metric_color, width=max(1, args.line_width - 1))
+                item[metric_name] = [mx, my, mw, mh]
+        safe_boxes.append(item)
+
+    guides = []
+    for name, group in template.get("alignment_groups", {}).items():
+        override = variant.get("alignment_overrides", {}).get(args.template, {}).get(name, {})
+        group = {**group, **override}
+        edge = str(group.get("edge", "left"))
+        anchor_role = group.get("anchor_role")
+        if group.get("position") is not None:
+            position = float(group["position"])
+        elif anchor_role in resolved_specs and "box" in resolved_specs[anchor_role]:
+            ax, ay, aw, ah = (float(value) for value in resolved_specs[anchor_role]["box"])
+            position = {"left": ax, "right": ax + aw, "center": ax + aw / 2}[edge]
+        else:
+            continue
+        if edge in {"left", "right", "center"}:
+            px = int(round(position))
+            draw.line((px, 0, px, canvas.height), fill=(255, 222, 61, 190), width=1)
+            guides.append({"name": name, "edge": edge, "position": position})
 
     canvas.alpha_composite(overlay)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     canvas.save(args.output, format="PNG", optimize=True)
     report_path = args.output.with_suffix(".json")
     report_path.write_text(
-        json.dumps({"template": args.template, "variant": args.variant, "image": str(image_path), "safe_boxes": report}, ensure_ascii=False, indent=2),
+        json.dumps({"template": args.template, "variant": args.variant, "image": str(image_path), "safe_boxes": safe_boxes, "alignment_guides": guides, "violations": violations}, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
-    print(f"visualized {len(report)} safe boxes -> {args.output}")
+    print(f"visualized {len(safe_boxes)} safe boxes -> {args.output}")
 
 
 if __name__ == "__main__":

@@ -99,6 +99,8 @@ class PixelAlchemistSmokeTest(unittest.TestCase):
                     "first",
                     "--image",
                     str(output / "first" / "static.png"),
+                    "--report",
+                    str(output / "render-report.json"),
                     "--roles",
                     "title",
                     "--output",
@@ -109,7 +111,8 @@ class PixelAlchemistSmokeTest(unittest.TestCase):
             subprocess.run([sys.executable, str(VALIDATOR), str(config_path), str(output)], check=True)
 
             safe_zone_report = json.loads(safe_zone_preview.with_suffix(".json").read_text(encoding="utf-8"))
-            self.assertEqual(safe_zone_report["safe_boxes"], [{"role": "title", "type": "text", "box": [82, 30, 204, 62]}])
+            self.assertEqual(safe_zone_report["safe_boxes"][0]["box"], [82, 30, 204, 62])
+            self.assertIn("ink_box", safe_zone_report["safe_boxes"][0])
 
             with Image.open(output / "first" / "motion.gif") as rendered:
                 self.assertEqual(rendered.n_frames, 3)

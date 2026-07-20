@@ -97,15 +97,95 @@ Use one JSON file for font sources, asset fallbacks, templates, elements, and va
 
 ## Variants
 
-`variants` are generic batch records. `id` determines the output folder. `language` selects fonts and shaping but is optional for non-text work. `values`, `assets`, `background`, `backgrounds`, and `layout_overrides` may vary independently.
+`variants` are generic batch records. `id` determines the output folder. `language` selects fonts and shaping but is optional for non-text work. `values`, `assets`, `background`, `backgrounds`, `layout_overrides`, and `alignment_overrides` may vary independently.
+
+`layout_overrides[template][element]` changes only that element in that template. `alignment_overrides[template][group]` changes only that template-local alignment group. Never put a language exception in the base template when only one variant and one template need it.
 
 Legacy `locales` and `copy_key` remain accepted as aliases for `variants` and `value_key`.
 
 Top-level assets merge in `default` → base language → full language → variant id order; variant-level `assets` win last. This supports any fallback scheme without duplicating templates.
 
+## Templates own their coordinates
+
+Treat every template as an independent measured composition. Reusing role names expresses semantic identity, not coordinate identity. Do not derive portrait coordinates by scaling landscape coordinates unless the supplied artwork proves that relationship.
+
+```json
+{
+  "templates": {
+    "landscape": {
+      "canvas": [1600, 900],
+      "elements": {
+        "headline": {"type": "text", "value_key": "headline", "box": [84, 470, 620, 128]},
+        "date": {"type": "text", "value_key": "date", "box": [84, 606, 500, 54]},
+        "location": {"type": "icon_text", "value_key": "location", "box": [84, 674, 540, 48]}
+      },
+      "alignment_groups": {
+        "main-copy": {
+          "members": ["headline", "date", "location"],
+          "edge": "left",
+          "anchor_role": "headline"
+        }
+      }
+    },
+    "portrait": {
+      "canvas": [1080, 1350],
+      "elements": {
+        "headline": {"type": "text", "value_key": "headline", "box": [594, 336, 414, 110]},
+        "date": {"type": "text", "value_key": "date", "box": [594, 454, 390, 50]},
+        "location": {"type": "icon_text", "value_key": "location", "box": [594, 518, 390, 44]}
+      },
+      "alignment_groups": {
+        "main-copy": {
+          "members": ["headline", "date", "location"],
+          "edge": "left",
+          "position": 594
+        }
+      }
+    }
+  }
+}
+```
+
+An alignment group belongs to exactly one template. It may align `left`, `right`, or `center` and must provide exactly one reference:
+
+- `anchor_role`: derive the target edge or centerline from one member's resolved element box after element overrides;
+- `position`: use an explicit canvas coordinate for the edge or centerline.
+
+Set the optional group-level `physical_align` to `left`, `center`, or `right` when all member text and `icon_text` elements must place their visible content against the same physical canvas edge. This does not change bidi shaping or reading direction.
+
+`members` may contain text, `icon_text`, buttons, or image elements. Alignment groups resolve their element boxes before drawing; for `icon_text`, that box contains the complete compound unit. QA may then inspect the reported visible group or ink bounds. Alignment groups place elements; QA tolerances belong under `template.qa`, not inside the group.
+
+## Template-local QA
+
+Define acceptance rules beside the template whose geometry they inspect:
+
+```json
+{
+  "qa": {
+    "alignment_groups": [
+      {"roles": ["headline", "date", "location"], "edge": "left", "metric": "ink_box", "tolerance": 2}
+    ],
+    "spacing": [
+      {"roles": ["headline", "date"], "axis": "y", "min": 12}
+    ],
+    "non_overlap": [
+      ["headline", "location"]
+    ],
+    "elements": {
+      "headline": {"min_font_size": 34, "max_lines": 3, "containment_tolerance": 0},
+      "location": {"containment_tolerance": 0}
+    }
+  }
+}
+```
+
+The two `alignment_groups` fields have different jobs. `template.alignment_groups` is an object of named placement constraints and moves element boxes before rendering. `template.qa.alignment_groups` is a list of assertions over actual reported metrics and never moves content. QA roles need not duplicate one placement group exactly; use them to state the visible relationship that must pass.
+
+Run QA against actual rendered ink, image, button, or compound group bounds. A configured element box is an available region, not proof that visible content is aligned or collision-free. Treat QA failures as production failures unless the current project explicitly approves an exception.
+
 ## Built-in elements
 
-- `text`: fitted variable or fixed text. Supports alignment, line limits, line height, stroke, and shadow.
+- `text`: fitted variable or fixed text. Supports direction, physical alignment, wrapping strategy, line limits, line height, stroke, and shadow.
 - `image`: arbitrary raster or SVG asset with `contain`, `cover`, or `stretch`; supports opacity and rotation.
 - `icon_text`: measured icon-and-text group with physical or logical icon sides; accepts `icon` or `icon_asset_key`.
 - `button`: rounded shape, fitted label, vector arrow, and automatic arrow removal for long values.
@@ -120,6 +200,36 @@ Elements render by ascending `z`; equal values retain JSON order. Set `enabled: 
 For `erase`, `mask_path` is a full-canvas grayscale mask; white pixels are replaced. `box` and `polygon` can be combined with the mask. Use `mask_expand` for antialiased remnants and `feather` for soft blending.
 
 Text elements may set `font_path` to use one exact font file instead of language-level font mapping. This is useful when `analyze_flattened_text.py` has matched a font candidate. Its `render_spec` output can be pasted into a template, then change `fixed_text` or replace it with `value_key` for batch variants.
+
+### Text direction, placement, and wrapping
+
+Keep these properties independent:
+
+- `direction`: `auto`, `ltr`, or `rtl`; controls shaping, bidi order, and language-engine behavior.
+- `physical_align`: `left`, `center`, or `right`; controls where the rendered ink sits in its box on the canvas.
+- `wrap_strategy`: `auto`, `word`, `grapheme`, or `manual`; controls legal line-break candidates.
+
+`auto` may infer RTL shaping from the language or text, but it must not silently change an explicit `physical_align`. Mixed Arabic/Latin text remains in logical Unicode order. `manual` accepts only supplied newlines. `grapheme` preserves combining sequences; use it as the safe fallback for Thai and other scripts when a language-aware word segmenter is unavailable. Explicit newlines remain immutable under every strategy.
+
+```json
+{
+  "type": "text",
+  "value_key": "headline",
+  "box": [92, 120, 560, 150],
+  "direction": "rtl",
+  "physical_align": "left",
+  "wrap_strategy": "auto",
+  "max_font_size": 58,
+  "min_font_size": 34,
+  "max_lines": 3
+}
+```
+
+This can shape a logical mixed string such as `تبقّى 4 أيام حتى Hall A في 2026` as RTL while keeping its visible block on a physically left-aligned design baseline.
+
+### `icon_text` alignment
+
+Use `physical_align` to place the complete measured icon-and-text unit inside its box, and `icon_side: start|end|left|right` to control the icon relative to logical or physical direction. `group_align` remains a backward-compatible fallback when `physical_align` is absent. The text is measured independently inside that compound unit. The alignment report includes `group_box`, `icon_box`, `text_box`, and `ink_box` so template alignment and collision QA can use the complete visible element.
 
 For a flattened-only source, generate the full-canvas mask first:
 

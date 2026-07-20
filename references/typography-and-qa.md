@@ -25,15 +25,18 @@ Run `erase_text_mask.py` with the emitted erase mask. It tests Telea, Navier-Sto
 
 - Use project-supplied fonts first. Validate actual glyph coverage rather than trusting a family name.
 - Treat explicit `\n` as immutable semantic breaks.
-- Wrap space-delimited writing systems at words. For CJK or scripts without reliable spaces, use character wrapping only when no language-aware segmenter is available.
+- Wrap space-delimited writing systems at words. Use a language-aware segmenter for Thai when available; otherwise wrap at extended grapheme clusters rather than Unicode code points. Apply the same grapheme rule to combining-mark scripts.
+- Never begin a rendered line with a detached combining mark, split a conjunct or emoji sequence, or reorder text to imitate RTL.
 - Avoid orphaned final lines. Rebalance line breaks, widen the safe box, or reduce size within the approved range.
-- Use element/template/variant overrides for genuine outliers. Do not solve one collision by shrinking every output.
+- Measure and fit each template independently. The same semantic role may have unrelated portrait, landscape, square, banner, and animation coordinates.
+- Use a base element, template-local alignment group, `layout_overrides[template][element]`, then `alignment_overrides[template][group]` for genuine outliers. Do not solve one collision by shrinking every template or output.
 - Include stroke width in fit measurements. Account for shadows and glows in safe-area padding.
 
 ## Bidirectional and complex scripts
 
 - Require Pillow RAQM for Arabic and other bidirectional production output.
 - Use logical Unicode text with the appropriate direction and language; never reverse strings manually.
+- Keep `direction` separate from `physical_align`. Direction controls shaping and bidi order; physical alignment controls the visible canvas edge. An RTL paragraph may intentionally be physically left-aligned.
 - Inspect punctuation, mixed Latin fragments, numeric dates, combining marks, and line order at 100% zoom.
 - Validate Thai, Indic, Arabic, and Southeast Asian shaping with the actual supplied font files.
 
@@ -42,7 +45,15 @@ Run `erase_text_mask.py` with the emitted erase mask. It tests Telea, Navier-Sto
 - Reuse supplied SVG/PNG/WebP assets whenever possible.
 - Treat logos, icons, product cutouts, QR codes, barcodes, badges, and decorative marks as `image` elements or hook-generated assets.
 - Use `contain` when the full asset must remain visible, `cover` when the box must be filled, and `stretch` only for assets designed to deform.
-- Anchor image-and-text groups as one measured unit when their relative spacing must remain stable.
+- Anchor image-and-text groups as one measured unit when their relative spacing must remain stable. Report the complete group bounds, icon bounds, text ink bounds, and actual gap.
+
+## Template-local layout constraints
+
+- Put every alignment group inside the template it governs. A group never shares a coordinate with another template implicitly.
+- Align members by rendered left edge, right edge, or centerline using either an `anchor_role` or an explicit `position`, never both.
+- Put rendered alignment assertions under the `template.qa.alignment_groups` list; each assertion names `roles`, `edge`, `metric`, and `tolerance`. QA describes acceptance and never changes placement.
+- Use `template.qa.spacing` for required vertical or horizontal gaps, `template.qa.non_overlap` for collision pairs, and `template.qa.elements` for safe-area and minimum-font requirements.
+- Apply variant exceptions only to the affected template. Record every applied element or alignment override in the render report.
 
 ## Animation
 
@@ -55,12 +66,15 @@ Run `erase_text_mask.py` with the emitted erase mask. It tests Telea, Navier-Sto
 
 Inspect at least:
 
-1. Smallest and largest canvases.
-2. Shortest and longest variable values.
+1. Every template as its own coordinate system, including smallest and largest canvases.
+2. Shortest and longest variable values and the smallest selected font size.
 3. Lightest and darkest backgrounds.
-4. Every distinct writing system.
-5. A variant using fallback assets and one using overrides.
-6. Transparent output when requested.
-7. First, middle, and last animation frames plus full playback.
+4. Every distinct writing system, including a mixed RTL/LTR string and a grapheme-sensitive long string.
+5. A variant using fallback assets, one using an element override, and one using an alignment override.
+6. Every `icon_text` logical side and physical group-alignment mode used in production.
+7. Transparent output when requested.
+8. First, middle, and last animation frames plus full playback.
 
-Verify reconstruction seams, old-element remnants, safe boxes, collisions, font family and weight, measured font-match confidence, outside-mask changed-pixel count, line balance, image fit, z-order, opacity, rotation, masks, output dimensions, and animation metadata.
+Generate one labeled QA grid per template with all requested variants in a stable order. Add badges or a companion report for language, direction, selected font, selected size, line count, fallback use, and applied overrides. A grid is a review surface, not a substitute for automated checks.
+
+Verify reconstruction seams, old-element remnants, actual ink bounds, compound group bounds, alignment tolerances, spacing, collisions, safe boxes, minimum readable size, font family and weight, measured font-match confidence, outside-mask changed-pixel count, line balance, image fit, z-order, opacity, rotation, masks, output dimensions, and animation metadata. Fail on detached Thai marks, malformed bidi order, missing fonts, unapproved fallback, overflow, misalignment, or overlap.
