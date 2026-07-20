@@ -25,12 +25,14 @@ Run `erase_text_mask.py` with the emitted erase mask. It tests Telea, Navier-Sto
 
 - Use project-supplied fonts first. Validate actual glyph coverage rather than trusting a family name.
 - Treat explicit `\n` as immutable semantic breaks.
+- Classify copy as line-locked or wrap-allowed. For line-locked copy, test the whole string across the approved font range before considering any line break; do not accept a larger wrapped layout merely because it was encountered first.
 - Wrap space-delimited writing systems at words. Use a language-aware segmenter for Thai when available; otherwise wrap at extended grapheme clusters rather than Unicode code points. Apply the same grapheme rule to combining-mark scripts.
 - Never begin a rendered line with a detached combining mark, split a conjunct or emoji sequence, or reorder text to imitate RTL.
 - Avoid orphaned final lines. Rebalance line breaks, widen the safe box, or reduce size within the approved range.
 - Measure and fit each template independently. The same semantic role may have unrelated portrait, landscape, square, banner, and animation coordinates.
 - Use a base element, template-local alignment group, `layout_overrides[template][element]`, then `alignment_overrides[template][group]` for genuine outliers. Do not solve one collision by shrinking every template or output.
 - Include stroke width in fit measurements. Account for shadows and glows in safe-area padding.
+- Measure fixed foreground artwork separately from text boxes. Store it as obstacle geometry, give text a maximum approved flow region, and compute free segments from the actual vertical band instead of imposing one narrow width on all rows.
 
 ## Bidirectional and complex scripts
 
@@ -52,7 +54,7 @@ Run `erase_text_mask.py` with the emitted erase mask. It tests Telea, Navier-Sto
 - Put every alignment group inside the template it governs. A group never shares a coordinate with another template implicitly.
 - Align members by rendered left edge, right edge, or centerline using either an `anchor_role` or an explicit `position`, never both.
 - Put rendered alignment assertions under the `template.qa.alignment_groups` list; each assertion names `roles`, `edge`, `metric`, and `tolerance`. QA describes acceptance and never changes placement.
-- Use `template.qa.spacing` for required vertical or horizontal gaps, `template.qa.non_overlap` for collision pairs, and `template.qa.elements` for safe-area and minimum-font requirements.
+- Use `template.qa.spacing` for required vertical or horizontal gaps, `template.qa.non_overlap` for rendered-element collision pairs, `template.qa.obstacle_clearance` for fixed-background collisions, and `template.qa.elements` for safe-area, minimum-font, and unnecessary-wrap requirements.
 - Apply variant exceptions only to the affected template. Record every applied element or alignment override in the render report.
 
 ## Animation
@@ -77,4 +79,4 @@ Inspect at least:
 
 Generate one labeled QA grid per template with all requested variants in a stable order. Add badges or a companion report for language, direction, selected font, selected size, line count, fallback use, and applied overrides. A grid is a review surface, not a substitute for automated checks.
 
-Verify reconstruction seams, old-element remnants, actual ink bounds, compound group bounds, alignment tolerances, spacing, collisions, safe boxes, minimum readable size, font family and weight, measured font-match confidence, outside-mask changed-pixel count, line balance, image fit, z-order, opacity, rotation, masks, output dimensions, and animation metadata. Fail on detached Thai marks, malformed bidi order, missing fonts, unapproved fallback, overflow, misalignment, or overlap.
+Verify reconstruction seams, old-element remnants, actual ink bounds, compound group bounds, declared obstacle bounds, maximum flow boxes, resolved free segments, alignment tolerances, spacing, collisions, safe boxes, unnecessary wrapping, minimum readable size, font family and weight, measured font-match confidence, outside-mask changed-pixel count, line balance, image fit, z-order, opacity, rotation, masks, output dimensions, and animation metadata. Fail on detached Thai marks, malformed bidi order, missing fonts, unapproved fallback, overflow, misalignment, needless line breaks, or overlap.

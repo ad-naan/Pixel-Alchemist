@@ -33,17 +33,20 @@ class LayoutQaTest(unittest.TestCase):
                         "portrait": {"type": "image", "box": [96, 0, 100, 150]},
                         "panel": {"type": "rect", "box": [0, 0, 80, 80]},
                     },
+                    "obstacles": {"fixed_art": {"box": [145, 8, 24, 30], "padding": 2}},
                     "qa": {
                         "containment": True,
                         "alignment_groups": [{"roles": ["title", "date"], "edge": "left", "metric": "ink_box", "tolerance": 2}],
                         "spacing": [{"from": "title", "to": "date", "axis": "y", "min": 4}],
                         "non_overlap": [["title", "portrait"]],
+                        "obstacle_clearance": [{"roles": ["title"], "obstacles": ["fixed_art"]}],
                         "elements": {
                             "title": {
                                 "min_font_size": 20,
                                 "min_font_scale": 0.5,
                                 "max_height_density": 0.8,
                                 "containment_tolerance": 0,
+                                "forbid_unnecessary_wrap": True,
                             }
                         },
                     },
@@ -91,6 +94,8 @@ class LayoutQaTest(unittest.TestCase):
                         "font_scale": 24 / 28,
                         "height_density": 15 / 22,
                         "lines": ["Title"],
+                        "line_count": 1,
+                        "single_line_possible": True,
                     },
                     "date": {"ink_box": [11, 34, 35, 12], "font_size": 20, "lines": ["Date"]},
                     "portrait": {"ink_box": [100, 0, 90, 150]},
@@ -127,9 +132,18 @@ class LayoutQaTest(unittest.TestCase):
             root = Path(temporary)
             config, output, report = self.make_project(root)
             title = report[0]["metrics"]["title"]
-            title.update({"ink_box": [10, 10, 40, 22], "font_size": 12, "font_scale": 0.3, "height_density": 0.95})
+            title.update({
+                "ink_box": [143, 10, 40, 22],
+                "font_size": 12,
+                "font_scale": 0.3,
+                "height_density": 0.95,
+                "lines": ["Long", "title"],
+                "line_count": 2,
+                "single_line_possible": True,
+                "single_line_min_width": 48,
+            })
             report[0]["metrics"]["date"]["ink_box"] = [16, 25, 35, 12]
-            report[0]["metrics"]["portrait"]["ink_box"] = [45, 15, 20, 20]
+            report[0]["metrics"]["portrait"]["ink_box"] = [150, 15, 20, 20]
             (output / "render-report.json").write_text(json.dumps(report), encoding="utf-8")
             validation_json = root / "validation.json"
             completed = subprocess.run(
@@ -153,9 +167,11 @@ class LayoutQaTest(unittest.TestCase):
                     "alignment",
                     "spacing",
                     "non_overlap",
+                    "obstacle_clearance",
                     "typography.min_font_size",
                     "typography.min_font_scale",
                     "typography.max_height_density",
+                    "typography.unnecessary_wrap",
                     "containment",
                 }.issubset(rules)
             )

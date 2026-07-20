@@ -8,6 +8,23 @@ def merged_spec(template_name: str, role: str, spec: dict[str, Any], variant: di
     return {**spec, **template_overrides.get(role, {})}
 
 
+def resolve_obstacles(template_name: str, template: dict[str, Any], variant: dict[str, Any]) -> dict[str, Any]:
+    """Resolve fixed visual regions, including per-variant geometry overrides."""
+    obstacles = {
+        str(name): dict(value) if isinstance(value, dict) else value
+        for name, value in template.get("obstacles", {}).items()
+    }
+    overrides = variant.get("obstacle_overrides", {}).get(template_name, {})
+    for name, override in overrides.items():
+        if override is None:
+            obstacles.pop(str(name), None)
+        elif isinstance(override, dict) and isinstance(obstacles.get(str(name)), dict):
+            obstacles[str(name)] = {**obstacles[str(name)], **override}
+        else:
+            obstacles[str(name)] = override
+    return obstacles
+
+
 def resolve_elements(
     template_name: str,
     template: dict[str, Any],

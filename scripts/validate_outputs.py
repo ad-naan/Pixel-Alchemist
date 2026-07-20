@@ -8,9 +8,9 @@ from typing import Any
 from PIL import Image, ImageSequence
 
 try:
-    from .layout import resolve_elements
+    from .layout import resolve_elements, resolve_obstacles
 except ImportError:
-    from layout import resolve_elements
+    from layout import resolve_elements, resolve_obstacles
 
 
 def variant_id(item: dict[str, Any]) -> str:
@@ -206,6 +206,74 @@ def validate_non_overlap(
             )
 
 
+def obstacle_rules(value: Any, metrics: dict[str, Any], template_name: str, template: dict[str, Any], variant: dict[str, Any]) -> list[dict[str, Any]]:
+    if isinstance(value, list):
+        return [item for item in value if isinstance(item, dict)]
+    if isinstance(value, dict):
+        return [value]
+    if value is True:
+        specs = resolve_elements(template_name, template, variant)
+        roles = [
+            role
+            for role, spec in specs.items()
+            if role in metrics and str(spec.get("type", "text")) in {"text", "icon_text", "button"}
+        ]
+        return [{"roles": roles}]
+    return []
+
+
+def validate_obstacle_clearance(
+    rules: Any,
+    metrics: dict[str, Any],
+    template_name: str,
+    template: dict[str, Any],
+    variant: dict[str, Any],
+    violations: list[dict[str, Any]],
+    context: dict[str, str],
+) -> None:
+    obstacles = resolve_obstacles(template_name, template, variant)
+    for raw in obstacle_rules(rules, metrics, template_name, template, variant):
+        roles = [str(role) for role in raw.get("roles", [])]
+        names = [str(name) for name in raw.get("obstacles", obstacles.keys())]
+        key = str(raw.get("metric", "ink_box"))
+        rule_padding = float(raw.get("padding", 0))
+        for role in roles:
+            rendered = required_box(metrics, role, key, violations, context, "obstacle_clearance")
+            if rendered is None:
+                continue
+            r_left, r_top, r_right, r_bottom = xyxy(rendered)
+            for name in names:
+                obstacle = obstacles.get(name)
+                raw_box = obstacle.get("box") if isinstance(obstacle, dict) else obstacle
+                if not (isinstance(raw_box, list) and len(raw_box) == 4):
+                    add_violation(
+                        violations,
+                        **context,
+                        rule="obstacle_clearance.missing_obstacle",
+                        roles=[role, f"obstacle:{name}"],
+                        actual=None,
+                        expected="configured obstacle box",
+                    )
+                    continue
+                padding = float(obstacle.get("padding", rule_padding)) if isinstance(obstacle, dict) else rule_padding
+                o_left, o_top, o_right, o_bottom = xyxy(raw_box)
+                o_left -= padding
+                o_top -= padding
+                o_right += padding
+                o_bottom += padding
+                overlap_x = max(0.0, min(r_right, o_right) - max(r_left, o_left))
+                overlap_y = max(0.0, min(r_bottom, o_bottom) - max(r_top, o_top))
+                if overlap_x > 0 and overlap_y > 0:
+                    add_violation(
+                        violations,
+                        **context,
+                        rule="obstacle_clearance",
+                        roles=[role, f"obstacle:{name}"],
+                        actual={"overlap": [overlap_x, overlap_y], "area": overlap_x * overlap_y, "metric_box": rendered},
+                        expected={"area": 0, "obstacle_box": raw_box, "padding": padding, "metric": key},
+                    )
+
+
 def validate_typography(
     rules: dict[str, Any], metrics: dict[str, Any], violations: list[dict[str, Any]], context: dict[str, str]
 ) -> None:
@@ -246,6 +314,33 @@ def validate_typography(
                     roles=[role],
                     actual=value,
                     expected=limits[rule_name],
+                )
+        if limits.get("forbid_unnecessary_wrap"):
+            line_count = actual.get("line_count")
+            if line_count is None and isinstance(actual.get("lines"), list):
+                line_count = len(actual["lines"])
+            possible = actual.get("single_line_possible")
+            if line_count is None or possible is None:
+                add_violation(
+                    violations,
+                    **context,
+                    rule="typography.forbid_unnecessary_wrap.missing_metric",
+                    roles=[role],
+                    actual={"line_count": line_count, "single_line_possible": possible},
+                    expected="line_count and single_line_possible",
+                )
+            elif int(line_count) > 1 and bool(possible):
+                add_violation(
+                    violations,
+                    **context,
+                    rule="typography.unnecessary_wrap",
+                    roles=[role],
+                    actual={
+                        "line_count": int(line_count),
+                        "single_line_min_width": actual.get("single_line_min_width"),
+                        "available_width": (actual.get("safe_box") or [None, None, None, None])[2],
+                    },
+                    expected="one line at or above the configured single-line minimum font size",
                 )
 
 
@@ -324,6 +419,15 @@ def validate_qa(
     validate_alignment(qa.get("alignment_groups", []), metrics, violations, context)
     validate_spacing(qa.get("spacing", []), metrics, violations, context)
     validate_non_overlap(qa.get("non_overlap", []), metrics, violations, context)
+    validate_obstacle_clearance(
+        qa.get("obstacle_clearance", []),
+        metrics,
+        template_name,
+        template,
+        variant,
+        violations,
+        context,
+    )
     element_rules = qa.get("elements", qa.get("typography", {}))
     validate_typography(element_rules, metrics, violations, context)
     element_containment = [

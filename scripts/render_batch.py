@@ -12,9 +12,9 @@ from typing import Any
 from PIL import GifImagePlugin, Image, ImageColor, ImageDraw, ImageFilter, ImageFont, ImageSequence, features
 
 try:
-    from .layout import resolve_elements
+    from .layout import resolve_elements, resolve_obstacles
 except ImportError:
-    from layout import resolve_elements
+    from layout import resolve_elements, resolve_obstacles
 
 
 def language_key(value: str) -> str:
@@ -216,6 +216,28 @@ def fit_text(
     max_lines = int(spec.get("max_lines", 1))
     line_height = float(spec.get("line_height", 1.12))
     stroke_width = int(spec.get("stroke_width", 0))
+    prefer_single_line = bool(spec.get("prefer_single_line", False)) and "\n" not in text
+    if prefer_single_line:
+        single_line_min = int(spec.get("single_line_min_font_size", spec["min_font_size"]))
+        single_line_min = max(single_line_min, int(spec["min_font_size"]))
+        for size in range(int(spec["max_font_size"]), single_line_min - 1, -1):
+            font = load_element_font(spec, fonts, language, weight, size, base_dir)
+            box = measured_box(draw, text, font, language, spec, stroke_width)
+            line_width = box[2] - box[0]
+            line_height_px = box[3] - box[1]
+            if line_width <= box_width and line_height_px <= box_height:
+                return {
+                    "font": font,
+                    "font_size": size,
+                    "lines": [text],
+                    "boxes": [box],
+                    "line_heights": [line_height_px],
+                    "line_widths": [line_width],
+                    "gap": 0,
+                    "total_height": line_height_px,
+                    "box": [x, y, box_width, box_height],
+                    "fit_mode": "single_line_preferred",
+                }
     for size in range(int(spec["max_font_size"]), int(spec["min_font_size"]) - 1, -1):
         font = load_element_font(spec, fonts, language, weight, size, base_dir)
         lines = wrap_text(draw, text, font, box_width, language, spec)
@@ -237,6 +259,7 @@ def fit_text(
                 "gap": gap,
                 "total_height": total_height,
                 "box": [x, y, box_width, box_height],
+                "fit_mode": "wrapped" if len(lines) > 1 else "single_line",
             }
     raise ValueError(f"{language} text does not fit {box_width}x{box_height}: {text!r}")
 
@@ -296,7 +319,29 @@ def draw_text_element(
     ink_bottom = max(box[1] + box[3] for box in line_boxes)
     max_font_size = int(spec["max_font_size"])
     max_lines = int(spec.get("max_lines", 1))
-    return {
+    single_line_text = " ".join(text.splitlines())
+    single_line_width = width(draw, single_line_text, fit["font"], language, spec)
+    single_line_test_size = int(spec.get("single_line_min_font_size", spec["min_font_size"]))
+    single_line_test_size = max(single_line_test_size, int(spec["min_font_size"]))
+    single_line_test_font = load_element_font(
+        spec,
+        fonts,
+        language,
+        str(spec.get("weight", "regular")),
+        single_line_test_size,
+        base_dir,
+    )
+    single_line_test_box = measured_box(
+        draw,
+        single_line_text,
+        single_line_test_font,
+        language,
+        spec,
+        int(spec.get("stroke_width", 0)),
+    )
+    single_line_min_width = single_line_test_box[2] - single_line_test_box[0]
+    single_line_min_height = single_line_test_box[3] - single_line_test_box[1]
+    metrics = {
         "box": fit["box"],
         "safe_box": fit["box"],
         "ink_box": [ink_left, ink_top, ink_right - ink_left, ink_bottom - ink_top],
@@ -307,11 +352,26 @@ def draw_text_element(
         "lines": fit["lines"],
         "line_count": len(fit["lines"]),
         "max_lines": max_lines,
+        "fit_mode": fit.get("fit_mode", "single_line"),
+        "prefer_single_line": bool(spec.get("prefer_single_line", False)),
+        "single_line_width": single_line_width,
+        "single_line_min_font_size": single_line_test_size,
+        "single_line_min_width": single_line_min_width,
+        "single_line_possible": (
+            "\n" not in text
+            and single_line_min_width <= box_width
+            and single_line_min_height <= box_height
+        ),
         "content_height": fit["total_height"],
         "height_density": fit["total_height"] / box_height,
         "direction": direction,
         "physical_align": align,
     }
+    if spec.get("_configured_box") is not None:
+        metrics["configured_box"] = spec["_configured_box"]
+        metrics["flow_box"] = spec["_flow_box_applied"]
+        metrics["flow_segment"] = spec["_flow_segment"]
+    return metrics
 
 
 def paste_asset(
@@ -594,6 +654,86 @@ def resolved_assets(asset_catalog: dict[str, Any], variant: dict[str, Any]) -> d
     return assets
 
 
+def xyxy(box: list[int | float]) -> tuple[float, float, float, float]:
+    x, y, width, height = (float(value) for value in box)
+    return x, y, x + width, y + height
+
+
+def subtract_interval(segments: list[tuple[float, float]], cut: tuple[float, float]) -> list[tuple[float, float]]:
+    result: list[tuple[float, float]] = []
+    cut_left, cut_right = cut
+    for left, right in segments:
+        if cut_right <= left or cut_left >= right:
+            result.append((left, right))
+            continue
+        if cut_left > left:
+            result.append((left, min(cut_left, right)))
+        if cut_right < right:
+            result.append((max(cut_right, left), right))
+    return [(left, right) for left, right in result if right - left >= 1]
+
+
+def obstacle_box(raw: Any) -> list[int | float] | None:
+    value = raw.get("box") if isinstance(raw, dict) else raw
+    return value if isinstance(value, list) and len(value) == 4 else None
+
+
+def apply_flow_boxes(
+    elements: dict[str, dict[str, Any]],
+    template: dict[str, Any],
+    *,
+    template_name: str = "default",
+    variant: dict[str, Any] | None = None,
+) -> dict[str, dict[str, Any]]:
+    """Expand horizontal text regions into measured free space while respecting fixed obstacles."""
+    obstacles = resolve_obstacles(template_name, template, variant or {})
+    obstacle_map = obstacles if isinstance(obstacles, dict) else {}
+    resolved: dict[str, dict[str, Any]] = {}
+    for role, raw_spec in elements.items():
+        spec = dict(raw_spec)
+        flow_box = spec.get("flow_box")
+        box = spec.get("box")
+        if not (isinstance(flow_box, list) and len(flow_box) == 4 and isinstance(box, list) and len(box) == 4):
+            resolved[role] = spec
+            continue
+        if str(spec.get("flow_axis", "x")) != "x":
+            raise ValueError(f"{role}: only horizontal flow_axis='x' is supported")
+        flow_left, _, flow_right, _ = xyxy(flow_box)
+        _, box_top, _, box_bottom = xyxy(box)
+        segments = [(flow_left, flow_right)]
+        requested = spec.get("avoid_obstacles")
+        names = list(obstacle_map) if requested is None else [str(value) for value in requested]
+        padding = float(spec.get("obstacle_padding", 0))
+        for name in names:
+            raw_obstacle = obstacle_map.get(name)
+            current = obstacle_box(raw_obstacle)
+            if current is None:
+                raise ValueError(f"{role}: unknown or invalid obstacle {name!r}")
+            obstacle_left, obstacle_top, obstacle_right, obstacle_bottom = xyxy(current)
+            local_padding = float(raw_obstacle.get("padding", padding)) if isinstance(raw_obstacle, dict) else padding
+            if obstacle_bottom + local_padding <= box_top or obstacle_top - local_padding >= box_bottom:
+                continue
+            segments = subtract_interval(
+                segments,
+                (obstacle_left - local_padding, obstacle_right + local_padding),
+            )
+        if not segments:
+            raise ValueError(f"{role}: no free horizontal segment remains in flow_box")
+        box_left, _, box_right, _ = xyxy(box)
+        align = str(spec.get("physical_align", spec.get("align", "left")))
+        anchor = box_left if align == "left" else box_right if align == "right" else (box_left + box_right) / 2
+        anchored = [segment for segment in segments if segment[0] <= anchor <= segment[1]]
+        candidates = anchored or segments
+        selected = max(candidates, key=lambda segment: (segment[1] - segment[0], -abs((segment[0] + segment[1]) / 2 - anchor)))
+        left, right = selected
+        spec["_configured_box"] = list(box)
+        spec["_flow_box_applied"] = list(flow_box)
+        spec["_flow_segment"] = [round(left), box[1], round(right - left), box[3]]
+        spec["box"] = list(spec["_flow_segment"])
+        resolved[role] = spec
+    return resolved
+
+
 def render_frame(
     frame: Image.Image,
     *,
@@ -612,7 +752,12 @@ def render_frame(
     values = variant.get("values", variant.get("copy", {}))
     assets = resolved_assets(asset_catalog, variant)
     metrics = {}
-    resolved_element_specs = resolve_elements(template_name, template, variant)
+    resolved_element_specs = apply_flow_boxes(
+        resolve_elements(template_name, template, variant),
+        template,
+        template_name=template_name,
+        variant=variant,
+    )
     context = {
         "variant": variant,
         "variant_id": variant_identifier(variant),

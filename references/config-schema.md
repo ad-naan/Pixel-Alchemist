@@ -171,8 +171,12 @@ Define acceptance rules beside the template whose geometry they inspect:
     "non_overlap": [
       ["headline", "location"]
     ],
+    "obstacle_clearance": [
+      {"roles": ["headline", "date"], "obstacles": ["hero-art"], "metric": "ink_box", "padding": 4}
+    ],
     "elements": {
       "headline": {"min_font_size": 34, "max_lines": 3, "containment_tolerance": 0},
+      "date": {"forbid_unnecessary_wrap": true},
       "location": {"containment_tolerance": 0}
     }
   }
@@ -182,6 +186,53 @@ Define acceptance rules beside the template whose geometry they inspect:
 The two `alignment_groups` fields have different jobs. `template.alignment_groups` is an object of named placement constraints and moves element boxes before rendering. `template.qa.alignment_groups` is a list of assertions over actual reported metrics and never moves content. QA roles need not duplicate one placement group exactly; use them to state the visible relationship that must pass.
 
 Run QA against actual rendered ink, image, button, or compound group bounds. A configured element box is an available region, not proof that visible content is aligned or collision-free. Treat QA failures as production failures unless the current project explicitly approves an exception.
+
+## Obstacles, flow regions, and single-line preference
+
+Use obstacles for fixed pixels that are not drawn as batch elements but text must avoid, such as a portrait, product, logo, countdown numeral, or decorative foreground. A `flow_box` is the maximum approved region a text element may use. Before fitting, the renderer subtracts only obstacles that vertically intersect the element's text band and selects the free horizontal segment containing its physical alignment anchor. This lets lower copy use the full width when an upper visual no longer blocks it.
+
+```json
+{
+  "obstacles": {
+    "hero-art": {"box": [440, 130, 300, 490], "padding": 8}
+  },
+  "elements": {
+    "headline": {
+      "type": "text",
+      "value_key": "headline",
+      "box": [57, 480, 350, 84],
+      "flow_box": [57, 480, 700, 84],
+      "avoid_obstacles": ["hero-art"],
+      "prefer_single_line": true,
+      "single_line_min_font_size": 28,
+      "max_font_size": 46,
+      "min_font_size": 24,
+      "max_lines": 2
+    },
+    "slogan": {
+      "type": "text",
+      "value_key": "slogan",
+      "box": [57, 660, 350, 48],
+      "flow_box": [57, 660, 700, 48],
+      "prefer_single_line": true,
+      "single_line_min_font_size": 20,
+      "max_font_size": 28,
+      "min_font_size": 18,
+      "max_lines": 2
+    }
+  },
+  "qa": {
+    "obstacle_clearance": [
+      {"roles": ["headline", "slogan"], "obstacles": ["hero-art"], "metric": "ink_box", "padding": 4}
+    ],
+    "elements": {
+      "slogan": {"forbid_unnecessary_wrap": true}
+    }
+  }
+}
+```
+
+Set `obstacle_clearance: true` to check every text, icon-text, and button metric against every obstacle, or use explicit rules for tighter control. A variant may change obstacle geometry with `obstacle_overrides[template][name]`; set an override to `null` to remove that obstacle. Explicit newlines always win over `prefer_single_line`. The render report records the configured box, maximum flow box, selected free segment, fit mode, and single-line feasibility.
 
 ## Built-in elements
 
@@ -208,6 +259,8 @@ Keep these properties independent:
 - `direction`: `auto`, `ltr`, or `rtl`; controls shaping, bidi order, and language-engine behavior.
 - `physical_align`: `left`, `center`, or `right`; controls where the rendered ink sits in its box on the canvas.
 - `wrap_strategy`: `auto`, `word`, `grapheme`, or `manual`; controls legal line-break candidates.
+- `prefer_single_line`: when true and the value has no explicit newline, tries the approved single-line size range before considering wrapped layouts.
+- `single_line_min_font_size`: the smallest acceptable size for the single-line attempt; it cannot be below `min_font_size`.
 
 `auto` may infer RTL shaping from the language or text, but it must not silently change an explicit `physical_align`. Mixed Arabic/Latin text remains in logical Unicode order. `manual` accepts only supplied newlines. `grapheme` preserves combining sequences; use it as the safe fallback for Thai and other scripts when a language-aware word segmenter is unavailable. Explicit newlines remain immutable under every strategy.
 

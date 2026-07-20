@@ -27,7 +27,8 @@ The demo starts from a generated text-free background and renders English and Ar
 - Measure changed regions between clean backgrounds and finished references, with annotated coordinate previews.
 - Batch by arbitrary variants: language, product, market, date, price, channel, or any combination.
 - Measure every landscape, portrait, square, banner, and animation template as an independent coordinate system.
-- Fit multilingual text with explicit semantic line breaks, grapheme-safe wrapping, font fallback, stroke, shadow, and RTL shaping.
+- Fit multilingual text with explicit semantic line breaks, single-line-first fitting, grapheme-safe wrapping, font fallback, stroke, shadow, and RTL shaping.
+- Route text through measured free regions around fixed portraits, products, logos, countdown numerals, and other visual obstacles.
 - Separate logical text direction from physical canvas alignment for mixed Arabic, Latin, numbers, and punctuation.
 - Align related elements inside one template with shared-edge groups while retaining template-specific coordinates.
 - Replace images with variant-aware fallbacks, `contain`/`cover`/`stretch`, opacity, and rotation.
@@ -35,7 +36,7 @@ The demo starts from a generated text-free background and renders English and Ar
 - Remove flattened elements with solid fill, blur, masks, or OpenCV inpainting.
 - Preserve GIF frame count, per-frame timing, disposal, transparency, and loop.
 - Extend complex projects through frame hooks without forking the generic renderer.
-- Validate output coverage, dimensions, fonts, alignment, spacing, overlap, readable size, and animation metadata; generate one QA grid per template.
+- Validate output coverage, dimensions, fonts, alignment, spacing, rendered-element and fixed-obstacle overlap, unnecessary wrapping, readable size, and animation metadata; generate one QA grid per template.
 
 ## Repository layout · 目录结构
 

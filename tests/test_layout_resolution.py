@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from layout import resolve_elements
-from render_batch import draw_icon_text, draw_text_element, physical_alignment, resolved_direction
+from render_batch import apply_flow_boxes, draw_icon_text, draw_text_element, physical_alignment, resolved_direction
 
 
 class LayoutResolutionTest(unittest.TestCase):
@@ -180,6 +180,46 @@ class LayoutResolutionTest(unittest.TestCase):
         }
         with self.assertRaises(ValueError):
             draw_text_element(canvas, text="one two three", language="en", spec=spec, fonts={}, base_dir=ROOT)
+
+    def test_prefer_single_line_shrinks_before_wrapping(self) -> None:
+        canvas = Image.new("RGBA", (360, 120), "#000000")
+        spec = {
+            "box": [20, 20, 250, 80],
+            "font_path": str(ROOT / "assets" / "fonts" / "poppins" / "Poppins-Regular.ttf"),
+            "max_font_size": 34,
+            "min_font_size": 18,
+            "single_line_min_font_size": 18,
+            "max_lines": 2,
+            "prefer_single_line": True,
+            "color": "#FFFFFF",
+        }
+        metrics = draw_text_element(
+            canvas,
+            text="Global finance leaders",
+            language="en",
+            spec=spec,
+            fonts={},
+            base_dir=ROOT,
+        )
+        self.assertEqual(metrics["line_count"], 1)
+        self.assertEqual(metrics["fit_mode"], "single_line_preferred")
+        self.assertTrue(metrics["single_line_possible"])
+
+    def test_flow_box_uses_only_obstacles_that_cross_the_text_band(self) -> None:
+        template = {"obstacles": {"hero": {"box": [220, 0, 100, 100], "padding": 10}}}
+        elements = {
+            "upper": {
+                "type": "text", "box": [20, 20, 180, 40], "flow_box": [20, 20, 360, 40],
+                "avoid_obstacles": ["hero"], "physical_align": "left",
+            },
+            "lower": {
+                "type": "text", "box": [20, 130, 180, 40], "flow_box": [20, 130, 360, 40],
+                "avoid_obstacles": ["hero"], "physical_align": "left",
+            },
+        }
+        resolved = apply_flow_boxes(elements, template)
+        self.assertEqual(resolved["upper"]["box"], [20, 20, 190, 40])
+        self.assertEqual(resolved["lower"]["box"], [20, 130, 360, 40])
 
     @unittest.skipUnless(features.check("raqm"), "Pillow RAQM is required")
     def test_arabic_render_reports_left_physical_alignment(self) -> None:

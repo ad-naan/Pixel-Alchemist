@@ -8,9 +8,11 @@ from typing import Any
 from PIL import Image, ImageColor, ImageDraw, ImageFont
 
 try:
-    from .layout import resolve_elements
+    from .layout import resolve_elements, resolve_obstacles
+    from .render_batch import apply_flow_boxes
 except ImportError:
-    from layout import resolve_elements
+    from layout import resolve_elements, resolve_obstacles
+    from render_batch import apply_flow_boxes
 
 
 PALETTE = ["#40E0D0", "#FFB347", "#FF6B8A", "#8FA8FF", "#B7E36B", "#D58BFF", "#66C7FF"]
@@ -76,7 +78,28 @@ def main() -> None:
     actual_metrics = report_row.get("metrics", {}) if report_row else {}
     violations = load_violations(args.validation_report, args.template, args.variant)
     failed_roles = {str(role) for item in violations for role in item.get("roles", [])}
-    resolved_specs = resolve_elements(args.template, template, variant)
+    configured_specs = resolve_elements(args.template, template, variant)
+    resolved_specs = apply_flow_boxes(
+        configured_specs,
+        template,
+        template_name=args.template,
+        variant=variant,
+    )
+    obstacles = []
+    for name, raw in resolve_obstacles(args.template, template, variant).items():
+        obstacle_box = raw.get("box") if isinstance(raw, dict) else raw
+        if not (isinstance(obstacle_box, list) and len(obstacle_box) == 4):
+            continue
+        ox, oy, ow, oh = (int(round(value)) for value in obstacle_box)
+        padding = int(round(raw.get("padding", 0))) if isinstance(raw, dict) else 0
+        draw.rectangle(
+            (ox - padding, oy - padding, ox + ow + padding, oy + oh + padding),
+            fill=(255, 48, 48, 32),
+            outline=(255, 48, 48, 255),
+            width=max(2, args.line_width),
+        )
+        draw.text((ox + 5, oy + 5), f"obstacle:{name}", font=label_font, fill=(255, 220, 220, 255))
+        obstacles.append({"name": str(name), "box": [ox, oy, ow, oh], "padding": padding})
     safe_boxes = []
     for index, (role, spec) in enumerate(resolved_specs.items()):
         kind = str(spec.get("type", ""))
@@ -86,6 +109,15 @@ def main() -> None:
             continue
         x, y, width, height = (int(value) for value in spec["box"])
         color = ImageColor.getcolor(PALETTE[index % len(PALETTE)], "RGBA")
+        configured = configured_specs.get(role, {})
+        flow_box = configured.get("flow_box")
+        if isinstance(flow_box, list) and len(flow_box) == 4:
+            fx, fy, fw, fh = (int(round(value)) for value in flow_box)
+            draw.rectangle(
+                (fx, fy, fx + fw, fy + fh),
+                outline=(45, 225, 255, 220),
+                width=max(1, args.line_width - 1),
+            )
         fill = (color[0], color[1], color[2], max(0, min(255, args.fill_alpha)))
         outline = (220, 35, 35, 255) if role in failed_roles else (color[0], color[1], color[2], 255)
         draw.rectangle((x, y, x + width, y + height), fill=fill, outline=outline, width=args.line_width)
@@ -97,6 +129,9 @@ def main() -> None:
         draw.rounded_rectangle((x, label_y, min(canvas.width, x + label_width), label_y + label_height), radius=5, fill=(5, 14, 28, 225))
         draw.text((x + 6, label_y + 4 - label_box[1]), label, font=label_font, fill=outline)
         item = {"role": role, "type": kind, "box": [x, y, width, height]}
+        if isinstance(flow_box, list) and len(flow_box) == 4:
+            item["flow_box"] = list(flow_box)
+            item["configured_box"] = list(configured.get("box", []))
         metrics = actual_metrics.get(role, {}) if isinstance(actual_metrics, dict) else {}
         for metric_name, metric_color in (("ink_box", (255, 255, 255, 255)), ("group_box", (255, 72, 72, 255))):
             metric_box = metrics.get(metric_name) if isinstance(metrics, dict) else None
@@ -129,7 +164,7 @@ def main() -> None:
     canvas.save(args.output, format="PNG", optimize=True)
     report_path = args.output.with_suffix(".json")
     report_path.write_text(
-        json.dumps({"template": args.template, "variant": args.variant, "image": str(image_path), "safe_boxes": safe_boxes, "alignment_guides": guides, "violations": violations}, ensure_ascii=False, indent=2),
+        json.dumps({"template": args.template, "variant": args.variant, "image": str(image_path), "obstacles": obstacles, "safe_boxes": safe_boxes, "alignment_guides": guides, "violations": violations}, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
     print(f"visualized {len(safe_boxes)} safe boxes -> {args.output}")
