@@ -175,9 +175,18 @@ Define acceptance rules beside the template whose geometry they inspect:
       {"roles": ["headline", "date"], "obstacles": ["hero-art"], "metric": "ink_box", "padding": 4}
     ],
     "elements": {
-      "headline": {"min_font_size": 34, "max_lines": 3, "containment_tolerance": 0},
+      "headline": {
+        "min_font_size": 34,
+        "max_lines": 3,
+        "containment_tolerance": 0,
+        "min_last_line_ratio": 0.35,
+        "preserve_terms": ["Product Suite"],
+        "forbidden_line_starts": [",", "."],
+        "forbidden_line_ends": ["&", "/"]
+      },
       "date": {"forbid_unnecessary_wrap": true},
-      "location": {"containment_tolerance": 0}
+      "location": {"containment_tolerance": 0},
+      "action": {"max_content_center_offset": 3}
     }
   }
 }
@@ -264,6 +273,8 @@ Keep these properties independent:
 
 `auto` may infer RTL shaping from the language or text, but it must not silently change an explicit `physical_align`. Mixed Arabic/Latin text remains in logical Unicode order. `manual` accepts only supplied newlines. `grapheme` preserves combining sequences; use it as the safe fallback for Thai and other scripts when a language-aware word segmenter is unavailable. Explicit newlines remain immutable under every strategy.
 
+Typography QA may set `min_last_line_ratio`, `preserve_terms`, `forbidden_line_starts`, and `forbidden_line_ends`. Scope these rules to the language and template that need them through `qa_overrides`; legal grapheme boundaries are not automatically good semantic breaks.
+
 ```json
 {
   "type": "text",
@@ -283,6 +294,10 @@ This can shape a logical mixed string such as `تبقّى 4 أيام حتى Hall
 ### `icon_text` alignment
 
 Use `physical_align` to place the complete measured icon-and-text unit inside its box, and `icon_side: start|end|left|right` to control the icon relative to logical or physical direction. `group_align` remains a backward-compatible fallback when `physical_align` is absent. The text is measured independently inside that compound unit. The alignment report includes `group_box`, `icon_box`, `text_box`, and `ink_box` so template alignment and collision QA can use the complete visible element.
+
+### Button compound alignment
+
+Buttons center the visible label and arrow as one unit by default. Set `content_align` to `left`, `center`, or `right`, and set `arrow_side` to `left`, `right`, `start`, or `end`. The render report includes `text_box`, `arrow_box`, `content_box`, `group_box`, and `content_center_offset_x`; use `max_content_center_offset` in element QA when the visual center must stay within a pixel tolerance. `drop_arrow_if_needed` remains the explicit permission for removing an arrow from a long localized label.
 
 For a flattened-only source, generate the full-canvas mask first:
 
@@ -311,3 +326,5 @@ Use hooks for OCR-assisted masks, content-aware reconstruction beyond OpenCV inp
 ## Output and animation
 
 Static outputs may be PNG, JPEG, WebP, or GIF. An animated GIF background produces a strict frame-for-frame GIF when the output suffix is `.gif`. Optional template `animation` fields let validation assert frame count, durations, and loop.
+
+Perspective-mapped transparent master layers use a separate, smaller configuration contract. Read `layer-families-and-delivery.md` before defining that file or applying delivery byte budgets.
