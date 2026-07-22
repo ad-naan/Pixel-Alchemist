@@ -35,6 +35,20 @@ Run `erase_text_mask.py` with the emitted erase mask. It tests Telea, Navier-Sto
 - Include stroke width in fit measurements. Account for shadows and glows in safe-area padding.
 - Measure fixed foreground artwork separately from text boxes. Store it as obstacle geometry, give text a maximum approved flow region, and compute free segments from the actual vertical band instead of imposing one narrow width on all rows.
 
+## Text material and optical color effects
+
+Do not reduce styled reference text to a named color. “Metallic gold” may be a nearly flat horizontal champagne transition, while small “white” copy may actually shift from warm ivory to pale gold.
+
+1. Isolate each semantic role independently: primary headline, emphasized phrase, supporting description, feature title, feature body, icon, and button label. Do not derive all roles from the headline.
+2. Prefer a clean/reference difference mask. Without a clean source, constrain the narrowest text box and select foreground pixels by RGB, luminance, and chroma ranges. Erode the mask by 1–2 pixels before sampling so antialiasing and JPEG halos do not dominate the curve.
+3. Run `scripts/sample_text_material.py` with both axes. Compare the median interior color by normalized x- and y-bin. Choose the simplest axis supported by a stable trend; do not infer direction from the word “metallic.”
+4. Use only enough stops to reproduce the observed curve. Preserve subtle effects: if sampled medians vary by only a few RGB values, do not exaggerate contrast or add an invented shine band.
+5. Render the gradient in local line or glyph bounds, then clip it through the antialiased text mask. A canvas-wide gradient changes color when copy length or alignment changes and is unsuitable for multilingual variants.
+6. For mixed flat and styled text on one line, measure and render the prefix and emphasized span separately while preserving their baseline and measured advance.
+7. Keep fixed reference text unchanged when requested. Apply the sampled material only to rebuilt variants.
+
+Record the source box, mask method, erosion, axis, bin medians, chosen stops, role, and local bounds in the render report. Inspect 100% crops of the shortest and longest variants. Reject visible banding, clipped antialiasing, pure-white substitutions for sampled ivory, or a gradient direction that disagrees with the reference.
+
 ## Bidirectional and complex scripts
 
 - Require Pillow RAQM for Arabic and other bidirectional production output.
