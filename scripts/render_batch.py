@@ -596,32 +596,78 @@ def draw_button(
     if selected_fit is None:
         raise ValueError(f"button label does not fit: {text!r}")
     draw_rect(canvas, {**spec, "color": spec.get("background", spec.get("color", "#F79331"))})
-    reserve = arrow_reserve + arrow_gap if selected_arrow else 0
+    text_width = max(selected_fit["line_widths"])
+    arrow_visual_width = max(8, round(arrow_reserve * 0.45)) if selected_arrow else 0
+    content_width = text_width + (arrow_gap + arrow_visual_width if selected_arrow else 0)
+    content_align = str(spec.get("content_align", "center"))
+    if content_align == "left":
+        content_x = x + padding_x
+    elif content_align == "right":
+        content_x = x + box_width - padding_x - content_width
+    elif content_align == "center":
+        content_x = x + (box_width - content_width) / 2
+    else:
+        raise ValueError(f"unsupported button content alignment: {content_align!r}")
+    direction = resolved_direction(text, spec)
+    arrow_side = str(spec.get("arrow_side", "right"))
+    if arrow_side == "start":
+        arrow_side = "right" if direction == "rtl" else "left"
+    elif arrow_side == "end":
+        arrow_side = "left" if direction == "rtl" else "right"
+    if arrow_side not in {"left", "right"}:
+        raise ValueError(f"unsupported button arrow side: {arrow_side!r}")
+    if selected_arrow and arrow_side == "left":
+        arrow_x = content_x
+        text_x = content_x + arrow_visual_width + arrow_gap
+    else:
+        text_x = content_x
+        arrow_x = content_x + text_width + arrow_gap
+    text_box = [round(text_x), y, max(1, round(text_width + 2)), box_height]
     label_spec = {
         **spec,
-        "box": [x + padding_x, y, max(1, box_width - padding_x * 2 - reserve), box_height],
-        "align": spec.get("text_align", "center"),
+        "box": text_box,
+        "physical_align": "left",
         "color": spec.get("text_color", "#FFFFFF"),
         "max_lines": int(spec.get("max_lines", 1)),
     }
     metrics = draw_text_element(canvas, text=text, language=language, spec=label_spec, fonts=fonts, base_dir=base_dir)
+    arrow_box = None
     if selected_arrow:
-        arrow_center_x = x + box_width - padding_x - arrow_reserve / 2
+        arrow_center_x = arrow_x + arrow_visual_width / 2
         arrow_center_y = y + box_height / 2
-        arrow_width = max(8, round(arrow_reserve * 0.45))
-        arrow_head = max(4, round(arrow_width * 0.28))
+        arrow_head = max(4, round(arrow_visual_width * 0.28))
         direction = str(spec.get("arrow_direction", "right"))
         sign = -1 if direction == "left" else 1
-        start_x = arrow_center_x - sign * arrow_width / 2
-        end_x = arrow_center_x + sign * arrow_width / 2
+        start_x = arrow_center_x - sign * arrow_visual_width / 2
+        end_x = arrow_center_x + sign * arrow_visual_width / 2
         arrow_color = spec.get("text_color", "#FFFFFF")
         arrow_draw = ImageDraw.Draw(canvas)
         line_width = max(1, int(spec.get("arrow_width", round(box_height * 0.035))))
         arrow_draw.line((start_x, arrow_center_y, end_x, arrow_center_y), fill=arrow_color, width=line_width)
         arrow_draw.line((end_x, arrow_center_y, end_x - sign * arrow_head, arrow_center_y - arrow_head), fill=arrow_color, width=line_width)
         arrow_draw.line((end_x, arrow_center_y, end_x - sign * arrow_head, arrow_center_y + arrow_head), fill=arrow_color, width=line_width)
+        arrow_left = min(start_x, end_x) - line_width / 2
+        arrow_top = arrow_center_y - arrow_head - line_width / 2
+        arrow_box = [round(arrow_left), round(arrow_top), round(arrow_visual_width + line_width), round(arrow_head * 2 + line_width)]
+    visible_boxes = [metrics["ink_box"]] + ([arrow_box] if arrow_box else [])
+    content_left = min(value[0] for value in visible_boxes)
+    content_top = min(value[1] for value in visible_boxes)
+    content_right = max(value[0] + value[2] for value in visible_boxes)
+    content_bottom = max(value[1] + value[3] for value in visible_boxes)
+    content_box = [content_left, content_top, content_right - content_left, content_bottom - content_top]
+    content_center_x = content_left + (content_right - content_left) / 2
     metrics["arrow_drawn"] = bool(selected_arrow)
+    metrics["arrow_box"] = arrow_box
+    metrics["text_box"] = text_box
+    metrics["text_safe_box"] = metrics["safe_box"]
+    metrics["content_box"] = content_box
+    metrics["group_box"] = content_box
+    metrics["content_center_offset_x"] = content_center_x - (x + box_width / 2)
+    metrics["content_align"] = content_align
+    metrics["arrow_side"] = arrow_side if selected_arrow else None
     metrics["button_box"] = [x, y, box_width, box_height]
+    metrics["box"] = [x, y, box_width, box_height]
+    metrics["safe_box"] = [x, y, box_width, box_height]
     return metrics
 
 

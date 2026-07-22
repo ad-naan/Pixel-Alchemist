@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from layout import resolve_elements
-from render_batch import apply_flow_boxes, draw_icon_text, draw_text_element, physical_alignment, resolved_direction
+from render_batch import apply_flow_boxes, draw_button, draw_icon_text, draw_text_element, physical_alignment, resolved_direction
 
 
 class LayoutResolutionTest(unittest.TestCase):
@@ -108,6 +108,34 @@ class LayoutResolutionTest(unittest.TestCase):
             )
         self.assertTrue({"group_box", "icon_box", "text_box"}.issubset(icon_metrics))
         self.assertEqual(icon_metrics["group_box"][0], text_spec["box"][0])
+
+    def test_button_centers_text_and_arrow_as_one_group(self) -> None:
+        canvas = Image.new("RGBA", (400, 120), "#000000")
+        metrics = draw_button(
+            canvas,
+            text="Continue",
+            language="en",
+            spec={
+                "box": [40, 24, 300, 64],
+                "font_path": str(ROOT / "assets" / "fonts" / "poppins" / "Poppins-Bold.ttf"),
+                "max_font_size": 28,
+                "min_font_size": 18,
+                "max_lines": 1,
+                "weight": "bold",
+                "background": "#F79331",
+                "text_color": "#FFFFFF",
+                "show_arrow": True,
+            },
+            fonts={},
+            base_dir=ROOT,
+        )
+        self.assertTrue(metrics["arrow_drawn"])
+        self.assertIsNotNone(metrics["arrow_box"])
+        self.assertTrue({"text_box", "content_box", "group_box", "content_center_offset_x"}.issubset(metrics))
+        self.assertLessEqual(abs(metrics["content_center_offset_x"]), 3)
+        left, _, width, _ = metrics["content_box"]
+        self.assertGreaterEqual(left, 40)
+        self.assertLessEqual(left + width, 340)
 
     def test_group_physical_alignment_overrides_legacy_icon_group_alignment(self) -> None:
         template = {

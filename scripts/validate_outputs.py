@@ -286,6 +286,7 @@ def validate_typography(
             ("min_font_scale", "font_scale", lambda value, limit: value >= limit),
             ("max_height_density", "height_density", lambda value, limit: value <= limit),
             ("max_lines", "line_count", lambda value, limit: value <= limit),
+            ("max_content_center_offset", "content_center_offset_x", lambda value, limit: abs(value) <= limit),
         ]
         for rule_name, metric_name, predicate in checks:
             if rule_name not in limits:
@@ -341,6 +342,65 @@ def validate_typography(
                         "available_width": (actual.get("safe_box") or [None, None, None, None])[2],
                     },
                     expected="one line at or above the configured single-line minimum font size",
+                )
+        lines = [str(line) for line in actual.get("lines", [])]
+        if "min_last_line_ratio" in limits and len(lines) > 1:
+            line_boxes = actual.get("line_boxes", [])
+            widths = [float(box[2]) for box in line_boxes if isinstance(box, list) and len(box) == 4]
+            if len(widths) != len(lines) or not widths or max(widths) <= 0:
+                add_violation(
+                    violations,
+                    **context,
+                    rule="typography.min_last_line_ratio.missing_metric",
+                    roles=[role],
+                    actual=line_boxes,
+                    expected="one line_box per rendered line",
+                )
+            else:
+                ratio = widths[-1] / max(widths)
+                if ratio < float(limits["min_last_line_ratio"]):
+                    add_violation(
+                        violations,
+                        **context,
+                        rule="typography.short_last_line",
+                        roles=[role],
+                        actual={"ratio": ratio, "line": lines[-1], "line_widths": widths},
+                        expected={"min_last_line_ratio": limits["min_last_line_ratio"]},
+                    )
+        compact_lines = ["".join(line.split()) for line in lines]
+        compact_text = "".join(compact_lines)
+        for term in limits.get("preserve_terms", []):
+            compact_term = "".join(str(term).split())
+            if compact_term and compact_term in compact_text and not any(compact_term in line for line in compact_lines):
+                add_violation(
+                    violations,
+                    **context,
+                    rule="typography.preserve_term",
+                    roles=[role],
+                    actual={"term": str(term), "lines": lines},
+                    expected="term must remain on one rendered line",
+                )
+        forbidden_starts = tuple(str(value) for value in limits.get("forbidden_line_starts", []) if str(value))
+        forbidden_ends = tuple(str(value) for value in limits.get("forbidden_line_ends", []) if str(value))
+        for index, line in enumerate(lines):
+            stripped = line.strip()
+            if forbidden_starts and stripped.startswith(forbidden_starts):
+                add_violation(
+                    violations,
+                    **context,
+                    rule="typography.forbidden_line_start",
+                    roles=[role],
+                    actual={"line_index": index, "line": line},
+                    expected={"forbidden": list(forbidden_starts)},
+                )
+            if forbidden_ends and stripped.endswith(forbidden_ends):
+                add_violation(
+                    violations,
+                    **context,
+                    rule="typography.forbidden_line_end",
+                    roles=[role],
+                    actual={"line_index": index, "line": line},
+                    expected={"forbidden": list(forbidden_ends)},
                 )
 
 

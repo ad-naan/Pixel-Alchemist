@@ -28,7 +28,8 @@ Run `erase_text_mask.py` with the emitted erase mask. It tests Telea, Navier-Sto
 - Classify copy as line-locked or wrap-allowed. For line-locked copy, test the whole string across the approved font range before considering any line break; do not accept a larger wrapped layout merely because it was encountered first.
 - Wrap space-delimited writing systems at words. Use a language-aware segmenter for Thai when available; otherwise wrap at extended grapheme clusters rather than Unicode code points. Apply the same grapheme rule to combining-mark scripts.
 - Never begin a rendered line with a detached combining mark, split a conjunct or emoji sequence, or reorder text to imitate RTL.
-- Avoid orphaned final lines. Rebalance line breaks, widen the safe box, or reduce size within the approved range.
+- Avoid orphaned final lines. Rebalance line breaks, widen the safe box, or reduce size within the approved range. Use template-local `min_last_line_ratio` when a short tail must fail automated QA.
+- Use `preserve_terms` for phrases or brand constructions that must remain together, and language-specific `forbidden_line_starts` or `forbidden_line_ends` for particles and punctuation. Do not assume every grapheme-safe break is semantically acceptable.
 - Measure and fit each template independently. The same semantic role may have unrelated portrait, landscape, square, banner, and animation coordinates.
 - Use a base element, template-local alignment group, `layout_overrides[template][element]`, then `alignment_overrides[template][group]` for genuine outliers. Do not solve one collision by shrinking every template or output.
 - Include stroke width in fit measurements. Account for shadows and glows in safe-area padding.
@@ -48,6 +49,7 @@ Run `erase_text_mask.py` with the emitted erase mask. It tests Telea, Navier-Sto
 - Treat logos, icons, product cutouts, QR codes, barcodes, badges, and decorative marks as `image` elements or hook-generated assets.
 - Use `contain` when the full asset must remain visible, `cover` when the box must be filled, and `stretch` only for assets designed to deform.
 - Anchor image-and-text groups as one measured unit when their relative spacing must remain stable. Report the complete group bounds, icon bounds, text ink bounds, and actual gap.
+- Treat a button label and arrow as one measured unit. Center the compound content rather than centering the label in the leftover area, and validate `content_center_offset_x` when visual centering is strict.
 
 ## Template-local layout constraints
 
@@ -80,3 +82,5 @@ Inspect at least:
 Generate one labeled QA grid per template with all requested variants in a stable order. Add badges or a companion report for language, direction, selected font, selected size, line count, fallback use, and applied overrides. A grid is a review surface, not a substitute for automated checks.
 
 Verify reconstruction seams, old-element remnants, actual ink bounds, compound group bounds, declared obstacle bounds, maximum flow boxes, resolved free segments, alignment tolerances, spacing, collisions, safe boxes, unnecessary wrapping, minimum readable size, font family and weight, measured font-match confidence, outside-mask changed-pixel count, line balance, image fit, z-order, opacity, rotation, masks, output dimensions, and animation metadata. Fail on detached Thai marks, malformed bidi order, missing fonts, unapproved fallback, overflow, misalignment, needless line breaks, or overlap.
+
+For perspective-mapped master layers and final size-budget compression, follow `layer-families-and-delivery.md`; those checks supplement rather than replace the template QA matrix.

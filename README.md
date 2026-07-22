@@ -8,9 +8,9 @@ Turn a folder of source images into a reproducible batch of edited static images
 
 把一批原始图片变成可重复执行、可检查、可扩展的静态图与逐帧 GIF 成品。
 
-Pixel Alchemist is a Codex skill and Python toolkit for measuring, removing, replacing, and drawing image elements at scale. It handles text, images, logos, icons, product cutouts, prices, dates, buttons, shapes, masks, multilingual layouts, and custom animation.
+Pixel Alchemist is a Codex skill and Python toolkit for measuring, removing, replacing, transforming, drawing, compressing, and validating image elements at scale. It handles text, images, logos, icons, product cutouts, prices, dates, buttons, shapes, masks, multilingual layouts, perspective-mapped layers, and custom animation.
 
-Pixel Alchemist 是一个用于批量测量、擦除、替换和绘制图片元素的 Codex Skill 与 Python 工具集。它可以处理文字、图片、标志、图标、商品、价格、日期、按钮、形状、遮罩、多语种排版与自定义动画。
+Pixel Alchemist 是一个用于批量测量、擦除、替换、透视映射、绘制、压缩和质检图片元素的 Codex Skill 与 Python 工具集。它可以处理文字、图片、标志、图标、商品、价格、日期、按钮、形状、遮罩、多语种排版、透明母版图层与自定义动画。
 
 ## Rendered examples · 绘制示例
 
@@ -28,15 +28,19 @@ The demo starts from a generated text-free background and renders English and Ar
 - Batch by arbitrary variants: language, product, market, date, price, channel, or any combination.
 - Measure every landscape, portrait, square, banner, and animation template as an independent coordinate system.
 - Fit multilingual text with explicit semantic line breaks, single-line-first fitting, grapheme-safe wrapping, font fallback, stroke, shadow, and RTL shaping.
+- Reject split protected phrases, forbidden line starts/ends, and visually weak short tail lines through template-local QA.
 - Route text through measured free regions around fixed portraits, products, logos, countdown numerals, and other visual obstacles.
 - Separate logical text direction from physical canvas alignment for mixed Arabic, Latin, numbers, and punctuation.
 - Align related elements inside one template with shared-edge groups while retaining template-specific coordinates.
 - Replace images with variant-aware fallbacks, `contain`/`cover`/`stretch`, opacity, and rotation.
 - Draw buttons, rectangles, ellipses, polygons, lines, and measured icon-text groups.
+- Center button labels and arrows as one measured compound unit.
+- Build one supersampled premultiplied-alpha master layer, cut out foreground occluders, and map it into proven crop/perspective target families.
 - Remove flattened elements with solid fill, blur, masks, or OpenCV inpainting.
 - Preserve GIF frame count, per-frame timing, disposal, transparency, and loop.
 - Extend complex projects through frame hooks without forking the generic renderer.
 - Validate output coverage, dimensions, fonts, alignment, spacing, rendered-element and fixed-obstacle overlap, unnecessary wrapping, readable size, and animation metadata; generate one QA grid per template.
+- Track asset revisions with SHA-256 manifests, merge incremental render reports, and compress static/GIF delivery files to strict byte budgets without changing GIF timing metadata.
 
 ## Repository layout · 目录结构
 
@@ -54,11 +58,15 @@ pixel-alchemist/
 │   ├── visualize_layout.py
 │   ├── check_text_runtime.py
 │   ├── render_batch.py
+│   ├── build_layer_family.py
+│   ├── compress_to_budget.py
+│   ├── merge_render_reports.py
 │   └── validate_outputs.py
 ├── references/
 │   ├── config-schema.md
 │   ├── flattened-recovery.md
 │   ├── typography-and-qa.md
+│   ├── layer-families-and-delivery.md
 │   └── bundled-fonts.md
 ├── examples/
 │   ├── demo/
@@ -135,6 +143,29 @@ Arabic and other bidirectional text require Pillow with RAQM, FriBiDi, and HarfB
    ```
 
 Every variant is written into its own folder. `render-report.json` records chosen font sizes, line breaks, actual ink and group bounds, applied overrides, and animation metadata. The QA directory contains a labeled comparison grid for each template.
+
+## Master layers and delivery · 母版图层与交付
+
+When a phone screen, monitor UI, or product label is shared by several proven crops or perspective mappings, build one maximum-resolution transparent master layer and derive the target layers from it:
+
+```powershell
+python scripts\build_layer_family.py layer-family.json --output-dir work\layers
+```
+
+The transform operates on premultiplied RGBA at a configurable supersampling factor, then applies interior and foreground-occlusion masks. Template-specific copy and logos remain in the normal batch renderer.
+
+Before a partial redraw, compare asset hashes. Afterward, merge the partial report into the last complete report and enforce full config coverage. Compress only the validated delivery directory:
+
+```powershell
+python scripts\inventory_assets.py sources --output work\assets.json
+python scripts\merge_render_reports.py work\full-report.json work\partial-report.json `
+  --output work\merged-report.json --config batch.json
+python scripts\compress_to_budget.py output delivery `
+  --static-max-bytes 200000 --gif-max-bytes 1000000
+python scripts\inventory_assets.py delivery --output work\delivery-manifest.json
+```
+
+See [`references/layer-families-and-delivery.md`](references/layer-families-and-delivery.md) for the transform schema, mask semantics, strict size-budget policy, and QA requirements.
 
 ## Text measurement and replacement workflow · 文字测量与改字流程
 
@@ -315,7 +346,7 @@ python scripts\render_batch.py batch.json --background-dir backgrounds `
 python -m unittest discover -s tests
 ```
 
-The tests cover arbitrary variants, independent template coordinates, template-local alignment groups, mixed RTL/LTR physical alignment, grapheme-safe Thai wrapping, icon-text grouping, layout QA, element removal, shapes, image assets, fitted text, safe-zone visualization, flattened-image font measurement, mask-scoped reconstruction, output validation, QA grids, and strict GIF metadata preservation.
+The tests cover arbitrary variants, independent template coordinates, template-local alignment groups, mixed RTL/LTR physical alignment, grapheme-safe Thai wrapping, semantic-break QA, compound button centering, obstacle-aware text flow, premultiplied-alpha layer families, asset hash diffs, incremental report merging, delivery compression, layout QA, flattened-image recovery, QA grids, and strict GIF metadata preservation.
 
 ## Fonts and licensing · 字体与授权
 

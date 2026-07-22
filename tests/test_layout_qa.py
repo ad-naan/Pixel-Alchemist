@@ -131,13 +131,24 @@ class LayoutQaTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             config, output, report = self.make_project(root)
+            payload = json.loads(config.read_text(encoding="utf-8"))
+            payload["templates"]["portrait"]["qa"]["elements"]["title"].update(
+                {
+                    "min_last_line_ratio": 0.5,
+                    "preserve_terms": ["Product Suite"],
+                    "forbidden_line_starts": ["Suite"],
+                    "forbidden_line_ends": ["Product"],
+                }
+            )
+            config.write_text(json.dumps(payload), encoding="utf-8")
             title = report[0]["metrics"]["title"]
             title.update({
                 "ink_box": [143, 10, 40, 22],
                 "font_size": 12,
                 "font_scale": 0.3,
                 "height_density": 0.95,
-                "lines": ["Long", "title"],
+                "lines": ["Product", "Suite"],
+                "line_boxes": [[143, 10, 40, 10], [143, 22, 8, 10]],
                 "line_count": 2,
                 "single_line_possible": True,
                 "single_line_min_width": 48,
@@ -172,6 +183,10 @@ class LayoutQaTest(unittest.TestCase):
                     "typography.min_font_scale",
                     "typography.max_height_density",
                     "typography.unnecessary_wrap",
+                    "typography.short_last_line",
+                    "typography.preserve_term",
+                    "typography.forbidden_line_start",
+                    "typography.forbidden_line_end",
                     "containment",
                 }.issubset(rules)
             )
