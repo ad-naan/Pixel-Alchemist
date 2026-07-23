@@ -78,6 +78,8 @@ Variant records may override `master` or individual `targets` only when source g
 - Use `clip_polygon` for a simple measured interior and `occlusion_polygons` for simple foreground shapes.
 - Prefer full-canvas antialiased masks for rounded device corners, hair, hands, glass, or irregular product silhouettes.
 - Never threshold antialiased alpha to binary after a perspective warp.
+- Use occlusion holes only for foreground that is effectively opaque relative to the replaced layer. Translucent glass shields, frosted props, or assets that will be re-composited later must not punch holes; leave the underlayer whole and cover them after the screen is placed.
+- When a device frame/body must sit above the screen, restore it from the template after the warp rather than trying to leave gaps in the screen layer for every shell pixel.
 - Inspect the master at 200–400% zoom, including every corner, device frame, notch/island, foreground badge, and bottom edge.
 - Validate target canvases from the saved master layer, not by independently re-estimating the source perspective for each size.
 

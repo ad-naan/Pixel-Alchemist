@@ -1,6 +1,6 @@
 ---
 name: pixel-alchemist
-description: Batch inspect, recover, measure, remove, replace, transform, compress, and validate elements in arbitrary static images and animated GIFs. Use for bulk image production involving flattened-image recovery, precise masks, perspective screen or product replacement, reusable transparent master layers, multilingual typography, logos, buttons, QR/image assets, inpainting, layout adaptation, per-variant data, frame-accurate animation, delivery size budgets, or pixel-level visual QA.
+description: Batch inspect, recover, measure, remove, replace, transform, compress, and validate elements in arbitrary static images and animated GIFs. Use for bulk image production involving flattened-image recovery, precise masks, perspective screen or product replacement, reusable transparent master layers, multilingual typography, logos, buttons, QR/image assets, inpainting, layout adaptation, per-variant data, frame-accurate animation, delivery size budgets, pixel-level visual QA, glass/frosted chrome extraction, transparent prop z-order over phone screens, or adaptive-width capsule reuse.
 ---
 
 # Pixel Alchemist
@@ -11,7 +11,9 @@ Build deterministic batches from arbitrary source images using project data, mea
 
 1. Inventory inputs with `scripts/inventory_assets.py`. Classify flat images, clean backgrounds, references, layered assets, fonts, spreadsheets, vectors, masks, and animations. Preserve the SHA-256 manifest and compare it again when the user supplies revised assets.
 2. Choose the safest source strategy. Use clean or layered sources when available. When only a flattened finished image exists, run `scripts/analyze_flattened_text.py` with known copy, search regions, colors, and candidate fonts; preserve its ink masks, effect masks, font matches, coordinates, and ready-to-paste render specs. When the reference uses metallic, ivory, neon, translucent, or otherwise non-flat text, run `scripts/sample_text_material.py` on each distinct semantic role before recreating the effect.
+2b. Before any crop or mask loop, lock the layer model. Name every stack in z-order (background, replacement screens, device shells, translucent chrome, coins/shields/props, copy). Prefer covering transparent foreground props over punching holes through underlayers. If a supplied RGBA asset exists for a prop, place that asset last; never invent polygon restores for glass.
 3. Reconstruct flattened regions with `scripts/erase_text_mask.py`. Require `outside_mask_byte_identical: true`; inspect seams before redrawing. Without a clean source, treat pixels under the old glyphs as an estimate rather than claiming the unknowable original background was recovered exactly.
+3b. For glass capsules, pills, frosted panels, or other translucent chrome: never redraw with solid gradients or procedural glass buttons when a finished reference exists. Extract one clean master plate, erase only the original label/dot ink, keep soft-edge padding, and composite as a difference plate or true alpha—not as a rectangular RGB stamp. When the same chrome repeats, pick the cleanest instance (no coin/hand/prop collision) and 9-slice only the middle for adaptive width; keep height and font size shared across siblings.
 4. When clean and finished references both exist, measure their differences with `scripts/measure_reference_diff.py`. Generate annotated previews and convert observed ink bounds into padded safe boxes. Measure every template independently, mark fixed foreground artwork as obstacles, and visualize resolved safe regions. Only when supplied targets are proven crops or mappings of one transformed visual layer, build that imagery once with `scripts/build_layer_family.py`; keep template-specific copy and logos independent.
 5. Extract batch data from the supplied workbook or JSON. Model each output as a generic `variant`; variants may represent languages, products, regions, dates, prices, channels, or any combination.
 6. Define templates and ordered elements in JSON using `references/config-schema.md`. Keep coordinates, copy, assets, effects, and per-variant overrides out of renderer code. Put shared-edge and spacing constraints inside the template they govern; never use an alignment group to impose one coordinate across different templates.
@@ -24,6 +26,15 @@ Build deterministic batches from arbitrary source images using project data, mea
 ## Non-negotiable rules
 
 - Prefer reversible compositing from clean sources. Use explicit masks and inpainting only when clean pixels are unavailable.
+- Diagnose layer order and material strategy before tuning crop rectangles. Endless mask expansion is a symptom of the wrong model.
+- Do not procedurally recreate glassmorphism, frosted glass, metal rims, or other non-flat chrome when the finished art already contains it. Sample or extract; do not invent.
+- Do not extract repeated chrome from polluted positions (props, coins, hands, overlapping text). One clean master plate must drive every sibling.
+- Crop soft materials with glow/shadow padding outside the hard silhouette; never clip to the opaque core.
+- When cleaning labels off glass plates, mask only glyph/dot ink. Never flood-fill endcaps or rims with a broad rectangle inpaint.
+- Composite translucent plates with difference-from-blank or true alpha. Pasting a rectangular RGB crop will reintroduce wrong background and square dirty edges.
+- When a transparent glass prop must sit above a replacement screen, leave the underlayer whole and cover with the prop. Punching an occlusion hole under translucent glass creates yellow/white bites.
+- If a baked-in translucent prop will be replaced by a supplied RGBA asset, erase or inpaint the baked instance first; never stack two glass copies.
+- Adaptive chrome width: fixed height, shared sibling font size, mid-slice stretch only. Do not shrink endcap glass or vary font size across one visual set unless the brief demands it.
 - Change no pixel outside an approved flattened-image erase mask. Expand the mask to include antialiasing, stroke, shadow, glow, and compression halos before reconstruction.
 - Treat exact font family and weight as candidate-matching results. Require known text plus candidate font files for strong identification; otherwise report estimates and confidence instead of inventing certainty.
 - Treat effect names such as “gold,” “metallic,” or “warm white” as visual descriptions, not render specifications. Measure the actual foreground pixels, determine the observed gradient axis, and reproduce the simplest sampled curve. Do not invent a vertical highlight band when the reference is a subtle horizontal transition.
@@ -49,6 +60,7 @@ Build deterministic batches from arbitrary source images using project data, mea
 - Read `references/flattened-recovery.md` whenever only a flattened finished image is available or typography must be inferred.
 - Read `references/typography-and-qa.md` for text shaping, wrapping, visual QA, flat-image reconstruction, and animation checks.
 - Read `references/layer-families-and-delivery.md` for perspective screen/product replacement, premultiplied alpha, occlusion masks, asset manifests, incremental redraws, compression budgets, and semantic or compound-button QA.
+- Read `references/glass-chrome-and-occlusion.md` when the job involves glass capsules/pills, frosted panels, shields/coins, transparent props over phone screens, or repeated UI chrome extracted from flattened finals.
 - Read `references/bundled-fonts.md` before selecting, replacing, or redistributing bundled fonts.
 
 ## Completion criteria

@@ -98,3 +98,14 @@ Generate one labeled QA grid per template with all requested variants in a stabl
 Verify reconstruction seams, old-element remnants, actual ink bounds, compound group bounds, declared obstacle bounds, maximum flow boxes, resolved free segments, alignment tolerances, spacing, collisions, safe boxes, unnecessary wrapping, minimum readable size, font family and weight, measured font-match confidence, outside-mask changed-pixel count, line balance, image fit, z-order, opacity, rotation, masks, output dimensions, and animation metadata. Fail on detached Thai marks, malformed bidi order, missing fonts, unapproved fallback, overflow, misalignment, needless line breaks, or overlap.
 
 For perspective-mapped master layers and final size-budget compression, follow `layer-families-and-delivery.md`; those checks supplement rather than replace the template QA matrix.
+
+
+## Semantic line breaks vs legal breaks
+
+Legal grapheme or dictionary breaks are not automatically good ad copy breaks.
+
+- Prefer explicit per-language newlines for short advertising phrases.
+- Wide templates default to single-line fit by reducing size before wrapping; do not import narrow-template line breaks into wide templates.
+- Reject orphan prepositions/particles, brand splits (e.g. compound product names), punctuation hanging alone, and last lines far shorter than the configured ratio.
+- Scope overrides to `(template, language)` only. Never let a narrow-template override leak into another canvas.
+- When a headline collides with a fixed phone/prop obstacle, shrink or rewrap within `flow_box`; do not silently overlap the device.
