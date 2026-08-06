@@ -1,0 +1,1683 @@
+{
+  "root": "D:\\Project\\ai-image\\Pixel-Alchemist\\assets\\fonts",
+  "font_count": 97,
+  "family_count": 9,
+  "families": {
+    "Be Vietnam Pro": [
+      "be_vietnam_pro/BeVietnamPro-Black.ttf",
+      "be_vietnam_pro/BeVietnamPro-BlackItalic.ttf",
+      "be_vietnam_pro/BeVietnamPro-Bold.ttf",
+      "be_vietnam_pro/BeVietnamPro-BoldItalic.ttf",
+      "be_vietnam_pro/BeVietnamPro-ExtraBold.ttf",
+      "be_vietnam_pro/BeVietnamPro-ExtraBoldItalic.ttf",
+      "be_vietnam_pro/BeVietnamPro-ExtraLight.ttf",
+      "be_vietnam_pro/BeVietnamPro-ExtraLightItalic.ttf",
+      "be_vietnam_pro/BeVietnamPro-Italic.ttf",
+      "be_vietnam_pro/BeVietnamPro-Light.ttf",
+      "be_vietnam_pro/BeVietnamPro-LightItalic.ttf",
+      "be_vietnam_pro/BeVietnamPro-Medium.ttf",
+      "be_vietnam_pro/BeVietnamPro-MediumItalic.ttf",
+      "be_vietnam_pro/BeVietnamPro-Regular.ttf",
+      "be_vietnam_pro/BeVietnamPro-SemiBold.ttf",
+      "be_vietnam_pro/BeVietnamPro-SemiBoldItalic.ttf",
+      "be_vietnam_pro/BeVietnamPro-Thin.ttf",
+      "be_vietnam_pro/BeVietnamPro-ThinItalic.ttf"
+    ],
+    "Kanit": [
+      "kanit/Kanit-Black.ttf",
+      "kanit/Kanit-BlackItalic.ttf",
+      "kanit/Kanit-Bold.ttf",
+      "kanit/Kanit-BoldItalic.ttf",
+      "kanit/Kanit-ExtraBold.ttf",
+      "kanit/Kanit-ExtraBoldItalic.ttf",
+      "kanit/Kanit-ExtraLight.ttf",
+      "kanit/Kanit-ExtraLightItalic.ttf",
+      "kanit/Kanit-Italic.ttf",
+      "kanit/Kanit-Light.ttf",
+      "kanit/Kanit-LightItalic.ttf",
+      "kanit/Kanit-Medium.ttf",
+      "kanit/Kanit-MediumItalic.ttf",
+      "kanit/Kanit-Regular.ttf",
+      "kanit/Kanit-SemiBold.ttf",
+      "kanit/Kanit-SemiBoldItalic.ttf",
+      "kanit/Kanit-Thin.ttf",
+      "kanit/Kanit-ThinItalic.ttf"
+    ],
+    "Kufam": [
+      "kufam/Kufam-Bold.ttf",
+      "kufam/Kufam-Italic-VariableFont_wght.ttf",
+      "kufam/Kufam-Regular.ttf",
+      "kufam/Kufam-VariableFont_wght.ttf",
+      "kufam/static/Kufam-Black.ttf",
+      "kufam/static/Kufam-BlackItalic.ttf",
+      "kufam/static/Kufam-Bold.ttf",
+      "kufam/static/Kufam-BoldItalic.ttf",
+      "kufam/static/Kufam-ExtraBold.ttf",
+      "kufam/static/Kufam-ExtraBoldItalic.ttf",
+      "kufam/static/Kufam-Italic.ttf",
+      "kufam/static/Kufam-Medium.ttf",
+      "kufam/static/Kufam-MediumItalic.ttf",
+      "kufam/static/Kufam-Regular.ttf",
+      "kufam/static/Kufam-SemiBold.ttf",
+      "kufam/static/Kufam-SemiBoldItalic.ttf"
+    ],
+    "LINE Seed JP": [
+      "line_seed_jp/LINESeedJP-Bold.ttf",
+      "line_seed_jp/LINESeedJP-ExtraBold.ttf",
+      "line_seed_jp/LINESeedJP-Regular.ttf",
+      "line_seed_jp/LINESeedJP-Thin.ttf"
+    ],
+    "Noto Sans": [
+      "noto_sans/NotoSans-Bold.ttf",
+      "noto_sans/NotoSans-Regular.ttf"
+    ],
+    "Noto Sans Devanagari": [
+      "noto_sans_devanagari/NotoSansDevanagari-Bold.ttf",
+      "noto_sans_devanagari/NotoSansDevanagari-Regular.ttf"
+    ],
+    "Playfair Display": [
+      "playfair_display/PlayfairDisplay-Italic-VariableFont_wght.ttf",
+      "playfair_display/PlayfairDisplay-VariableFont_wght.ttf",
+      "playfair_display/static/PlayfairDisplay-Black.ttf",
+      "playfair_display/static/PlayfairDisplay-BlackItalic.ttf",
+      "playfair_display/static/PlayfairDisplay-Bold.ttf",
+      "playfair_display/static/PlayfairDisplay-BoldItalic.ttf",
+      "playfair_display/static/PlayfairDisplay-ExtraBold.ttf",
+      "playfair_display/static/PlayfairDisplay-ExtraBoldItalic.ttf",
+      "playfair_display/static/PlayfairDisplay-Italic.ttf",
+      "playfair_display/static/PlayfairDisplay-Medium.ttf",
+      "playfair_display/static/PlayfairDisplay-MediumItalic.ttf",
+      "playfair_display/static/PlayfairDisplay-Regular.ttf",
+      "playfair_display/static/PlayfairDisplay-SemiBold.ttf",
+      "playfair_display/static/PlayfairDisplay-SemiBoldItalic.ttf"
+    ],
+    "Poppins": [
+      "poppins/Poppins-Black.ttf",
+      "poppins/Poppins-BlackItalic.ttf",
+      "poppins/Poppins-Bold.ttf",
+      "poppins/Poppins-BoldItalic.ttf",
+      "poppins/Poppins-ExtraBold.ttf",
+      "poppins/Poppins-ExtraBoldItalic.ttf",
+      "poppins/Poppins-ExtraLight.ttf",
+      "poppins/Poppins-ExtraLightItalic.ttf",
+      "poppins/Poppins-Italic.ttf",
+      "poppins/Poppins-Light.ttf",
+      "poppins/Poppins-LightItalic.ttf",
+      "poppins/Poppins-Medium.ttf",
+      "poppins/Poppins-MediumItalic.ttf",
+      "poppins/Poppins-Regular.ttf",
+      "poppins/Poppins-SemiBold.ttf",
+      "poppins/Poppins-SemiBoldItalic.ttf",
+      "poppins/Poppins-Thin.ttf",
+      "poppins/Poppins-ThinItalic.ttf"
+    ],
+    "Reem Kufi Fun": [
+      "reem_kufi_fun/ReemKufiFun-VariableFont_wght.ttf",
+      "reem_kufi_fun/static/ReemKufiFun-Bold.ttf",
+      "reem_kufi_fun/static/ReemKufiFun-Medium.ttf",
+      "reem_kufi_fun/static/ReemKufiFun-Regular.ttf",
+      "reem_kufi_fun/static/ReemKufiFun-SemiBold.ttf"
+    ]
+  },
+  "duplicate_hashes": {
+    "6ed017ac8ca984985fd1e67106cf4fd07bfa7185dd46b449d0e13a766bd48339": [
+      "kufam/Kufam-Bold.ttf",
+      "kufam/static/Kufam-Bold.ttf"
+    ],
+    "99ce19685fe87fcfe6995143b152fd9ec1bb9124d34344da3011e9013be4bfc7": [
+      "kufam/Kufam-Regular.ttf",
+      "kufam/static/Kufam-Regular.ttf"
+    ]
+  },
+  "errors": [],
+  "files": [
+    {
+      "path": "be_vietnam_pro/BeVietnamPro-Black.ttf",
+      "bytes": 141312,
+      "sha256": "7e7cb663fd30c299e8582cd2789b14a48ffb124a351f0069e29cf53167e847a5",
+      "family": "Be Vietnam Pro",
+      "subfamily": "Black",
+      "postscript_name": "BeVietnamPro-Black",
+      "variable_axes": [],
+      "glyph_codepoints": 459,
+      "scripts": [
+        "latin",
+        "latin_extended"
+      ],
+      "license": "be_vietnam_pro/OFL.txt"
+    },
+    {
+      "path": "be_vietnam_pro/BeVietnamPro-BlackItalic.ttf",
+      "bytes": 139260,
+      "sha256": "ffc25d71442894dec2e01c804f121d1c3d389d16eacad61099fadcc23be031f5",
+      "family": "Be Vietnam Pro",
+      "subfamily": "Black Italic",
+      "postscript_name": "BeVietnamPro-BlackItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 459,
+      "scripts": [
+        "latin",
+        "latin_extended"
+      ],
+      "license": "be_vietnam_pro/OFL.txt"
+    },
+    {
+      "path": "be_vietnam_pro/BeVietnamPro-Bold.ttf",
+      "bytes": 139012,
+      "sha256": "2fe6c3f9dbb65f61554d530c16b2eb4ec32ca437dc8f9999a6ec0f6403b30bfe",
+      "family": "Be Vietnam Pro",
+      "subfamily": "Bold",
+      "postscript_name": "BeVietnamPro-Bold",
+      "variable_axes": [],
+      "glyph_codepoints": 459,
+      "scripts": [
+        "latin",
+        "latin_extended"
+      ],
+      "license": "be_vietnam_pro/OFL.txt"
+    },
+    {
+      "path": "be_vietnam_pro/BeVietnamPro-BoldItalic.ttf",
+      "bytes": 136544,
+      "sha256": "f57b1d8bfb7f55c8c999639d196ef56b8828f9765437fafc4c81f7d2f092ede1",
+      "family": "Be Vietnam Pro",
+      "subfamily": "Bold Italic",
+      "postscript_name": "BeVietnamPro-BoldItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 459,
+      "scripts": [
+        "latin",
+        "latin_extended"
+      ],
+      "license": "be_vietnam_pro/OFL.txt"
+    },
+    {
+      "path": "be_vietnam_pro/BeVietnamPro-ExtraBold.ttf",
+      "bytes": 138372,
+      "sha256": "10fcb42b9cee8e30918843416676ae059e8f77fe439d0c3a4350617ef9f77a75",
+      "family": "Be Vietnam Pro",
+      "subfamily": "ExtraBold",
+      "postscript_name": "BeVietnamPro-ExtraBold",
+      "variable_axes": [],
+      "glyph_codepoints": 459,
+      "scripts": [
+        "latin",
+        "latin_extended"
+      ],
+      "license": "be_vietnam_pro/OFL.txt"
+    },
+    {
+      "path": "be_vietnam_pro/BeVietnamPro-ExtraBoldItalic.ttf",
+      "bytes": 136856,
+      "sha256": "f65f3cad267193062fd67c4968a4b711137bc9b6b51ef66e9789d32c6a7bccbe",
+      "family": "Be Vietnam Pro",
+      "subfamily": "ExtraBold Italic",
+      "postscript_name": "BeVietnamPro-ExtraBoldItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 459,
+      "scripts": [
+        "latin",
+        "latin_extended"
+      ],
+      "license": "be_vietnam_pro/OFL.txt"
+    },
+    {
+      "path": "be_vietnam_pro/BeVietnamPro-ExtraLight.ttf",
+      "bytes": 133132,
+      "sha256": "8d58c1f7b6b196a6d0df6d99b3d3daeede94fe3ff51cfdc6ddbc845262f0d826",
+      "family": "Be Vietnam Pro",
+      "subfamily": "ExtraLight",
+      "postscript_name": "BeVietnamPro-ExtraLight",
+      "variable_axes": [],
+      "glyph_codepoints": 459,
+      "scripts": [
+        "latin",
+        "latin_extended"
+      ],
+      "license": "be_vietnam_pro/OFL.txt"
+    },
+    {
+      "path": "be_vietnam_pro/BeVietnamPro-ExtraLightItalic.ttf",
+      "bytes": 130220,
+      "sha256": "e27309fd86d17bd9e1539add1c49d33f517c72e1359e83336d08f05d0e0f7788",
+      "family": "Be Vietnam Pro",
+      "subfamily": "ExtraLight Italic",
+      "postscript_name": "BeVietnamPro-ExtraLightItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 459,
+      "scripts": [
+        "latin",
+        "latin_extended"
+      ],
+      "license": "be_vietnam_pro/OFL.txt"
+    },
+    {
+      "path": "be_vietnam_pro/BeVietnamPro-Italic.ttf",
+      "bytes": 135952,
+      "sha256": "bc0269af52f3628c6191f427fc28fc89099fde6ab2de50e691de3078ca312f49",
+      "family": "Be Vietnam Pro",
+      "subfamily": "Italic",
+      "postscript_name": "BeVietnamPro-Italic",
+      "variable_axes": [],
+      "glyph_codepoints": 459,
+      "scripts": [
+        "latin",
+        "latin_extended"
+      ],
+      "license": "be_vietnam_pro/OFL.txt"
+    },
+    {
+      "path": "be_vietnam_pro/BeVietnamPro-Light.ttf",
+      "bytes": 135444,
+      "sha256": "030ae401cf91b2daae6344569a869d95156a5e74f2fcb6e0355ab2f388323084",
+      "family": "Be Vietnam Pro",
+      "subfamily": "Light",
+      "postscript_name": "BeVietnamPro-Light",
+      "variable_axes": [],
+      "glyph_codepoints": 459,
+      "scripts": [
+        "latin",
+        "latin_extended"
+      ],
+      "license": "be_vietnam_pro/OFL.txt"
+    },
+    {
+      "path": "be_vietnam_pro/BeVietnamPro-LightItalic.ttf",
+      "bytes": 134820,
+      "sha256": "7c4f3d89e9597ede00dace6b032eaa86e657b573053b4b532ce7a4981a65dbcf",
+      "family": "Be Vietnam Pro",
+      "subfamily": "Light Italic",
+      "postscript_name": "BeVietnamPro-LightItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 459,
+      "scripts": [
+        "latin",
+        "latin_extended"
+      ],
+      "license": "be_vietnam_pro/OFL.txt"
+    },
+    {
+      "path": "be_vietnam_pro/BeVietnamPro-Medium.ttf",
+      "bytes": 134668,
+      "sha256": "f493144cb53c78c6f0819bc9b73de274486618ac609bc92b3b79d4efc76f95c6",
+      "family": "Be Vietnam Pro",
+      "subfamily": "Medium",
+      "postscript_name": "BeVietnamPro-Medium",
+      "variable_axes": [],
+      "glyph_codepoints": 459,
+      "scripts": [
+        "latin",
+        "latin_extended"
+      ],
+      "license": "be_vietnam_pro/OFL.txt"
+    },
+    {
+      "path": "be_vietnam_pro/BeVietnamPro-MediumItalic.ttf",
+      "bytes": 137004,
+      "sha256": "3fd7e7dfce11e87753f35cd940c36cb533bafa0601a2d29c7cb6cc4b71c8c0b4",
+      "family": "Be Vietnam Pro",
+      "subfamily": "Medium Italic",
+      "postscript_name": "BeVietnamPro-MediumItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 459,
+      "scripts": [
+        "latin",
+        "latin_extended"
+      ],
+      "license": "be_vietnam_pro/OFL.txt"
+    },
+    {
+      "path": "be_vietnam_pro/BeVietnamPro-Regular.ttf",
+      "bytes": 131660,
+      "sha256": "cb6f53d6fd56316356c55b067474d9621c27b7182b124063b8f6eab6acef63bd",
+      "family": "Be Vietnam Pro",
+      "subfamily": "Regular",
+      "postscript_name": "BeVietnamPro-Regular",
+      "variable_axes": [],
+      "glyph_codepoints": 459,
+      "scripts": [
+        "latin",
+        "latin_extended"
+      ],
+      "license": "be_vietnam_pro/OFL.txt"
+    },
+    {
+      "path": "be_vietnam_pro/BeVietnamPro-SemiBold.ttf",
+      "bytes": 135420,
+      "sha256": "04db63d2a82dd4bb35ba25e00dab1d12febcd0e917856b174b71a24d6f0c9afa",
+      "family": "Be Vietnam Pro",
+      "subfamily": "SemiBold",
+      "postscript_name": "BeVietnamPro-SemiBold",
+      "variable_axes": [],
+      "glyph_codepoints": 459,
+      "scripts": [
+        "latin",
+        "latin_extended"
+      ],
+      "license": "be_vietnam_pro/OFL.txt"
+    },
+    {
+      "path": "be_vietnam_pro/BeVietnamPro-SemiBoldItalic.ttf",
+      "bytes": 133504,
+      "sha256": "d21a4d2d6da212a4d053b9ce3b22f8eca29f7a3e7b48c4cce3fd5bfbffac8f59",
+      "family": "Be Vietnam Pro",
+      "subfamily": "SemiBold Italic",
+      "postscript_name": "BeVietnamPro-SemiBoldItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 459,
+      "scripts": [
+        "latin",
+        "latin_extended"
+      ],
+      "license": "be_vietnam_pro/OFL.txt"
+    },
+    {
+      "path": "be_vietnam_pro/BeVietnamPro-Thin.ttf",
+      "bytes": 125692,
+      "sha256": "aaa740173473c65a454305579cc5628c19e6059b95a9069898fb6c5ca6d50c2e",
+      "family": "Be Vietnam Pro",
+      "subfamily": "Thin",
+      "postscript_name": "BeVietnamPro-Thin",
+      "variable_axes": [],
+      "glyph_codepoints": 459,
+      "scripts": [
+        "latin",
+        "latin_extended"
+      ],
+      "license": "be_vietnam_pro/OFL.txt"
+    },
+    {
+      "path": "be_vietnam_pro/BeVietnamPro-ThinItalic.ttf",
+      "bytes": 128264,
+      "sha256": "0217bc82b324a77a0178c849f5d03264f6f65dd21b363cb3eeb95f7a26ca8def",
+      "family": "Be Vietnam Pro",
+      "subfamily": "Thin Italic",
+      "postscript_name": "BeVietnamPro-ThinItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 459,
+      "scripts": [
+        "latin",
+        "latin_extended"
+      ],
+      "license": "be_vietnam_pro/OFL.txt"
+    },
+    {
+      "path": "kanit/Kanit-Black.ttf",
+      "bytes": 173492,
+      "sha256": "860484eb5205de5f154d1b21d65ba929297595d850d61eb4f274abcf5fe09098",
+      "family": "Kanit",
+      "subfamily": "Black",
+      "postscript_name": "Kanit-Black",
+      "variable_axes": [],
+      "glyph_codepoints": 725,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "thai"
+      ],
+      "license": "kanit/OFL.txt"
+    },
+    {
+      "path": "kanit/Kanit-BlackItalic.ttf",
+      "bytes": 182076,
+      "sha256": "e8790fbe8e93d23c131c554380dfad5288a5666f9ad1b3f69ea67318ef40d3e3",
+      "family": "Kanit",
+      "subfamily": "Black Italic",
+      "postscript_name": "Kanit-BlackItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 724,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "thai"
+      ],
+      "license": "kanit/OFL.txt"
+    },
+    {
+      "path": "kanit/Kanit-Bold.ttf",
+      "bytes": 172876,
+      "sha256": "2dc2caa0815dd6fde3560d115b1fdda20adcd8033c8bebed5f4b732f4e84302d",
+      "family": "Kanit",
+      "subfamily": "Bold",
+      "postscript_name": "Kanit-Bold",
+      "variable_axes": [],
+      "glyph_codepoints": 725,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "thai"
+      ],
+      "license": "kanit/OFL.txt"
+    },
+    {
+      "path": "kanit/Kanit-BoldItalic.ttf",
+      "bytes": 180308,
+      "sha256": "34a8de9da6f3f78180857859cd2955cf3819a6227c3b81de7973b0d7abe0682c",
+      "family": "Kanit",
+      "subfamily": "Bold Italic",
+      "postscript_name": "Kanit-BoldItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 724,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "thai"
+      ],
+      "license": "kanit/OFL.txt"
+    },
+    {
+      "path": "kanit/Kanit-ExtraBold.ttf",
+      "bytes": 174464,
+      "sha256": "d49ef92761869172cac1c836968c7df47d09d45cd490a48e320bf5893f9bad55",
+      "family": "Kanit",
+      "subfamily": "ExtraBold",
+      "postscript_name": "Kanit-ExtraBold",
+      "variable_axes": [],
+      "glyph_codepoints": 725,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "thai"
+      ],
+      "license": "kanit/OFL.txt"
+    },
+    {
+      "path": "kanit/Kanit-ExtraBoldItalic.ttf",
+      "bytes": 184928,
+      "sha256": "363388ef2b8ed18a7f1732d5df0325bcbafb858e0a348031996ace0bbb014d52",
+      "family": "Kanit",
+      "subfamily": "ExtraBold Italic",
+      "postscript_name": "Kanit-ExtraBoldItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 724,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "thai"
+      ],
+      "license": "kanit/OFL.txt"
+    },
+    {
+      "path": "kanit/Kanit-ExtraLight.ttf",
+      "bytes": 160796,
+      "sha256": "5542218ddeac7b37b5a3022abc0e201ad369f2916784bf74b15deaf5d40acd56",
+      "family": "Kanit",
+      "subfamily": "ExtraLight",
+      "postscript_name": "Kanit-ExtraLight",
+      "variable_axes": [],
+      "glyph_codepoints": 725,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "thai"
+      ],
+      "license": "kanit/OFL.txt"
+    },
+    {
+      "path": "kanit/Kanit-ExtraLightItalic.ttf",
+      "bytes": 164908,
+      "sha256": "2db3af7af6adb66b38132325d82a9a184744f66fb182442839c352c56882454d",
+      "family": "Kanit",
+      "subfamily": "ExtraLight Italic",
+      "postscript_name": "Kanit-ExtraLightItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 724,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "thai"
+      ],
+      "license": "kanit/OFL.txt"
+    },
+    {
+      "path": "kanit/Kanit-Italic.ttf",
+      "bytes": 171876,
+      "sha256": "e8457eb5b4148629d5e73ea2ccae68e5b8bd924f79479c589ecb00cba718478c",
+      "family": "Kanit",
+      "subfamily": "Italic",
+      "postscript_name": "Kanit-Italic",
+      "variable_axes": [],
+      "glyph_codepoints": 724,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "thai"
+      ],
+      "license": "kanit/OFL.txt"
+    },
+    {
+      "path": "kanit/Kanit-Light.ttf",
+      "bytes": 168036,
+      "sha256": "5dc5c91a861d1a4563aab01e950efe6806d216b25ed258e925e0d4fefdd18def",
+      "family": "Kanit",
+      "subfamily": "Light",
+      "postscript_name": "Kanit-Light",
+      "variable_axes": [],
+      "glyph_codepoints": 725,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "thai"
+      ],
+      "license": "kanit/OFL.txt"
+    },
+    {
+      "path": "kanit/Kanit-LightItalic.ttf",
+      "bytes": 171596,
+      "sha256": "2eaa9ae25921e190f2ad4d6b206e2105c8a0540e4902f9eee974f93853ce5d88",
+      "family": "Kanit",
+      "subfamily": "Light Italic",
+      "postscript_name": "Kanit-LightItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 724,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "thai"
+      ],
+      "license": "kanit/OFL.txt"
+    },
+    {
+      "path": "kanit/Kanit-Medium.ttf",
+      "bytes": 171336,
+      "sha256": "3f75c3310023eee648d6d15fcd2fd042320b73102b17942bb4bde0fe240d2c22",
+      "family": "Kanit",
+      "subfamily": "Medium",
+      "postscript_name": "Kanit-Medium",
+      "variable_axes": [],
+      "glyph_codepoints": 725,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "thai"
+      ],
+      "license": "kanit/OFL.txt"
+    },
+    {
+      "path": "kanit/Kanit-MediumItalic.ttf",
+      "bytes": 172360,
+      "sha256": "ebc2cd52e5839e2d529cfd75529f04096a7d05906e0aa0bd4d49eebb968977b6",
+      "family": "Kanit",
+      "subfamily": "Medium Italic",
+      "postscript_name": "Kanit-MediumItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 724,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "thai"
+      ],
+      "license": "kanit/OFL.txt"
+    },
+    {
+      "path": "kanit/Kanit-Regular.ttf",
+      "bytes": 169744,
+      "sha256": "7b3ec7e81c6e18e82bbd1512b21b8489103e71ed9a956aa70bf0725e590be2df",
+      "family": "Kanit",
+      "subfamily": "Regular",
+      "postscript_name": "Kanit-Regular",
+      "variable_axes": [],
+      "glyph_codepoints": 725,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "thai"
+      ],
+      "license": "kanit/OFL.txt"
+    },
+    {
+      "path": "kanit/Kanit-SemiBold.ttf",
+      "bytes": 171548,
+      "sha256": "0a2c1d48f57f387e42d24d9cf963d973cb71b3bd48fff9daa524d01606c8d6a8",
+      "family": "Kanit",
+      "subfamily": "SemiBold",
+      "postscript_name": "Kanit-SemiBold",
+      "variable_axes": [],
+      "glyph_codepoints": 725,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "thai"
+      ],
+      "license": "kanit/OFL.txt"
+    },
+    {
+      "path": "kanit/Kanit-SemiBoldItalic.ttf",
+      "bytes": 172244,
+      "sha256": "d134c97f3c509c7384b7398866ac0e6519c26a1ebb707b82c53fbe4eaf8fb2db",
+      "family": "Kanit",
+      "subfamily": "SemiBold Italic",
+      "postscript_name": "Kanit-SemiBoldItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 724,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "thai"
+      ],
+      "license": "kanit/OFL.txt"
+    },
+    {
+      "path": "kanit/Kanit-Thin.ttf",
+      "bytes": 155788,
+      "sha256": "dd9f4467528cb11cfb4f690ecd6347a5cec10576c69158b92f5200525ca646e8",
+      "family": "Kanit",
+      "subfamily": "Thin",
+      "postscript_name": "Kanit-Thin",
+      "variable_axes": [],
+      "glyph_codepoints": 725,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "thai"
+      ],
+      "license": "kanit/OFL.txt"
+    },
+    {
+      "path": "kanit/Kanit-ThinItalic.ttf",
+      "bytes": 161688,
+      "sha256": "da2660b11054ea6e5659f8ee3e9ab9bd1bc557a1789472a3f48f5d7f9432a36d",
+      "family": "Kanit",
+      "subfamily": "Thin Italic",
+      "postscript_name": "Kanit-ThinItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 724,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "thai"
+      ],
+      "license": "kanit/OFL.txt"
+    },
+    {
+      "path": "kufam/Kufam-Bold.ttf",
+      "bytes": 293176,
+      "sha256": "6ed017ac8ca984985fd1e67106cf4fd07bfa7185dd46b449d0e13a766bd48339",
+      "family": "Kufam",
+      "subfamily": "Bold",
+      "postscript_name": "Kufam-Bold",
+      "variable_axes": [],
+      "glyph_codepoints": 1056,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "arabic"
+      ],
+      "license": "kufam/OFL.txt"
+    },
+    {
+      "path": "kufam/Kufam-Italic-VariableFont_wght.ttf",
+      "bytes": 431832,
+      "sha256": "90c8d87cd0704314f020293aad707d664e62e3762b2413d7a2324b3aa3535003",
+      "family": "Kufam",
+      "subfamily": "Italic",
+      "postscript_name": "Kufam-Italic",
+      "variable_axes": [
+        "wght"
+      ],
+      "glyph_codepoints": 1056,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "arabic"
+      ],
+      "license": "kufam/OFL.txt"
+    },
+    {
+      "path": "kufam/Kufam-Regular.ttf",
+      "bytes": 292460,
+      "sha256": "99ce19685fe87fcfe6995143b152fd9ec1bb9124d34344da3011e9013be4bfc7",
+      "family": "Kufam",
+      "subfamily": "Regular",
+      "postscript_name": "Kufam-Regular",
+      "variable_axes": [],
+      "glyph_codepoints": 1056,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "arabic"
+      ],
+      "license": "kufam/OFL.txt"
+    },
+    {
+      "path": "kufam/Kufam-VariableFont_wght.ttf",
+      "bytes": 423968,
+      "sha256": "eb30874ab17bb192ed47af72e44aab013b5b31f13191d714b2a26ba26a0f75b4",
+      "family": "Kufam",
+      "subfamily": "Regular",
+      "postscript_name": "Kufam-Regular",
+      "variable_axes": [
+        "wght"
+      ],
+      "glyph_codepoints": 1056,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "arabic"
+      ],
+      "license": "kufam/OFL.txt"
+    },
+    {
+      "path": "kufam/static/Kufam-Black.ttf",
+      "bytes": 292412,
+      "sha256": "b768e5b611e0acbb57de98712874c954df844cdcd91a11c70c47e70176cf0f13",
+      "family": "Kufam",
+      "subfamily": "Black",
+      "postscript_name": "Kufam-Black",
+      "variable_axes": [],
+      "glyph_codepoints": 1056,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "arabic"
+      ],
+      "license": "kufam/OFL.txt"
+    },
+    {
+      "path": "kufam/static/Kufam-BlackItalic.ttf",
+      "bytes": 299012,
+      "sha256": "ed278b7d62efa9807c3e52950f0c694181526ba94a40fd924d234bb842067d96",
+      "family": "Kufam",
+      "subfamily": "Black Italic",
+      "postscript_name": "Kufam-BlackItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 1056,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "arabic"
+      ],
+      "license": "kufam/OFL.txt"
+    },
+    {
+      "path": "kufam/static/Kufam-Bold.ttf",
+      "bytes": 293176,
+      "sha256": "6ed017ac8ca984985fd1e67106cf4fd07bfa7185dd46b449d0e13a766bd48339",
+      "family": "Kufam",
+      "subfamily": "Bold",
+      "postscript_name": "Kufam-Bold",
+      "variable_axes": [],
+      "glyph_codepoints": 1056,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "arabic"
+      ],
+      "license": "kufam/OFL.txt"
+    },
+    {
+      "path": "kufam/static/Kufam-BoldItalic.ttf",
+      "bytes": 299612,
+      "sha256": "b8747152b8de22548aaee4681259661375539cf0edd8c6b26f6b27ce94b60f19",
+      "family": "Kufam",
+      "subfamily": "Bold Italic",
+      "postscript_name": "Kufam-BoldItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 1056,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "arabic"
+      ],
+      "license": "kufam/OFL.txt"
+    },
+    {
+      "path": "kufam/static/Kufam-ExtraBold.ttf",
+      "bytes": 293052,
+      "sha256": "7acf2c98b37c92e1e660097cb66be9681cafd4b0b30a3955df570f2a1fc1b3c4",
+      "family": "Kufam",
+      "subfamily": "ExtraBold",
+      "postscript_name": "Kufam-ExtraBold",
+      "variable_axes": [],
+      "glyph_codepoints": 1056,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "arabic"
+      ],
+      "license": "kufam/OFL.txt"
+    },
+    {
+      "path": "kufam/static/Kufam-ExtraBoldItalic.ttf",
+      "bytes": 299612,
+      "sha256": "8dee9d81e16996034d1476941182033e1fa86b083bd0ed251cb6a2ee138a261d",
+      "family": "Kufam",
+      "subfamily": "ExtraBold Italic",
+      "postscript_name": "Kufam-ExtraBoldItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 1056,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "arabic"
+      ],
+      "license": "kufam/OFL.txt"
+    },
+    {
+      "path": "kufam/static/Kufam-Italic.ttf",
+      "bytes": 298972,
+      "sha256": "8be36687a9bf8c6087e70c02d3367873c2004acad442c018954b1d80c32ce23f",
+      "family": "Kufam",
+      "subfamily": "Italic",
+      "postscript_name": "Kufam-Italic",
+      "variable_axes": [],
+      "glyph_codepoints": 1056,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "arabic"
+      ],
+      "license": "kufam/OFL.txt"
+    },
+    {
+      "path": "kufam/static/Kufam-Medium.ttf",
+      "bytes": 292832,
+      "sha256": "7f1f0ea01da790f9d64e6af03df3b399ee80e6d663290049d317c4c72091e894",
+      "family": "Kufam",
+      "subfamily": "Medium",
+      "postscript_name": "Kufam-Medium",
+      "variable_axes": [],
+      "glyph_codepoints": 1056,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "arabic"
+      ],
+      "license": "kufam/OFL.txt"
+    },
+    {
+      "path": "kufam/static/Kufam-MediumItalic.ttf",
+      "bytes": 299548,
+      "sha256": "703aff596d71a11b96f69a7d3e95f0ec3c008f6296e5c1f271391d4a8c9235d0",
+      "family": "Kufam",
+      "subfamily": "Medium Italic",
+      "postscript_name": "Kufam-MediumItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 1056,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "arabic"
+      ],
+      "license": "kufam/OFL.txt"
+    },
+    {
+      "path": "kufam/static/Kufam-Regular.ttf",
+      "bytes": 292460,
+      "sha256": "99ce19685fe87fcfe6995143b152fd9ec1bb9124d34344da3011e9013be4bfc7",
+      "family": "Kufam",
+      "subfamily": "Regular",
+      "postscript_name": "Kufam-Regular",
+      "variable_axes": [],
+      "glyph_codepoints": 1056,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "arabic"
+      ],
+      "license": "kufam/OFL.txt"
+    },
+    {
+      "path": "kufam/static/Kufam-SemiBold.ttf",
+      "bytes": 293064,
+      "sha256": "bb7c2910363f31237aa9ca52fad226f733133f246af11fbd029fecda6fced7a7",
+      "family": "Kufam",
+      "subfamily": "SemiBold",
+      "postscript_name": "Kufam-SemiBold",
+      "variable_axes": [],
+      "glyph_codepoints": 1056,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "arabic"
+      ],
+      "license": "kufam/OFL.txt"
+    },
+    {
+      "path": "kufam/static/Kufam-SemiBoldItalic.ttf",
+      "bytes": 299660,
+      "sha256": "7fea9d878641e6df5f45575351fef605d73e53254b621465bac9b738d73532f3",
+      "family": "Kufam",
+      "subfamily": "SemiBold Italic",
+      "postscript_name": "Kufam-SemiBoldItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 1056,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "arabic"
+      ],
+      "license": "kufam/OFL.txt"
+    },
+    {
+      "path": "line_seed_jp/LINESeedJP-Bold.ttf",
+      "bytes": 3769800,
+      "sha256": "d7baef3d9d1b5d3144063128890f1f80c7d3c88225697d6a4bce4fe55957e31e",
+      "family": "LINE Seed JP",
+      "subfamily": "Bold",
+      "postscript_name": "LINESeedJP-Bold",
+      "variable_axes": [],
+      "glyph_codepoints": 8341,
+      "scripts": [
+        "latin",
+        "cyrillic",
+        "hiragana",
+        "katakana",
+        "cjk"
+      ],
+      "license": "line_seed_jp/OFL.txt"
+    },
+    {
+      "path": "line_seed_jp/LINESeedJP-ExtraBold.ttf",
+      "bytes": 3587668,
+      "sha256": "24062b9375be9e1b391658a3a623e28491e9c2bd6bd9ae9d95901b6564e068b1",
+      "family": "LINE Seed JP",
+      "subfamily": "ExtraBold",
+      "postscript_name": "LINESeedJP-ExtraBold",
+      "variable_axes": [],
+      "glyph_codepoints": 8341,
+      "scripts": [
+        "latin",
+        "cyrillic",
+        "hiragana",
+        "katakana",
+        "cjk"
+      ],
+      "license": "line_seed_jp/OFL.txt"
+    },
+    {
+      "path": "line_seed_jp/LINESeedJP-Regular.ttf",
+      "bytes": 3657060,
+      "sha256": "167611a1f3dd3bc5b6a0beb47c20d15d930f63abdc0e5f035adbe1b4b6ef360d",
+      "family": "LINE Seed JP",
+      "subfamily": "Regular",
+      "postscript_name": "LINESeedJP-Regular",
+      "variable_axes": [],
+      "glyph_codepoints": 8341,
+      "scripts": [
+        "latin",
+        "cyrillic",
+        "hiragana",
+        "katakana",
+        "cjk"
+      ],
+      "license": "line_seed_jp/OFL.txt"
+    },
+    {
+      "path": "line_seed_jp/LINESeedJP-Thin.ttf",
+      "bytes": 3730836,
+      "sha256": "7616f3c0e84476b9336ada87c47b452767c6be630ea110dd20c34019a05b5c61",
+      "family": "LINE Seed JP",
+      "subfamily": "Thin",
+      "postscript_name": "LINESeedJP-Thin",
+      "variable_axes": [],
+      "glyph_codepoints": 8341,
+      "scripts": [
+        "latin",
+        "cyrillic",
+        "hiragana",
+        "katakana",
+        "cjk"
+      ],
+      "license": "line_seed_jp/OFL.txt"
+    },
+    {
+      "path": "noto_sans/NotoSans-Bold.ttf",
+      "bytes": 575740,
+      "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a",
+      "family": "Noto Sans",
+      "subfamily": "Bold",
+      "postscript_name": "NotoSans-Bold",
+      "variable_axes": [],
+      "glyph_codepoints": 2840,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "cyrillic"
+      ],
+      "license": "noto_sans/OFL.txt"
+    },
+    {
+      "path": "noto_sans/NotoSans-Regular.ttf",
+      "bytes": 569208,
+      "sha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "family": "Noto Sans",
+      "subfamily": "Regular",
+      "postscript_name": "NotoSans-Regular",
+      "variable_axes": [],
+      "glyph_codepoints": 2840,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "cyrillic"
+      ],
+      "license": "noto_sans/OFL.txt"
+    },
+    {
+      "path": "noto_sans_devanagari/NotoSansDevanagari-Bold.ttf",
+      "bytes": 225748,
+      "sha256": "19cc835a064c4af63e3c20feb54f5bf51dc25ffa52c0f493a23904572af8b26e",
+      "family": "Noto Sans Devanagari",
+      "subfamily": "Bold",
+      "postscript_name": "NotoSansDevanagari-Bold",
+      "variable_axes": [],
+      "glyph_codepoints": 272,
+      "scripts": [
+        "devanagari"
+      ],
+      "license": "noto_sans_devanagari/OFL.txt"
+    },
+    {
+      "path": "noto_sans_devanagari/NotoSansDevanagari-Regular.ttf",
+      "bytes": 219212,
+      "sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d",
+      "family": "Noto Sans Devanagari",
+      "subfamily": "Regular",
+      "postscript_name": "NotoSansDevanagari-Regular",
+      "variable_axes": [],
+      "glyph_codepoints": 272,
+      "scripts": [
+        "devanagari"
+      ],
+      "license": "noto_sans_devanagari/OFL.txt"
+    },
+    {
+      "path": "playfair_display/PlayfairDisplay-Italic-VariableFont_wght.ttf",
+      "bytes": 280660,
+      "sha256": "e32edc03421ea13490f7956d6386c10d38074ced33ba61922144bc22a7c70a9e",
+      "family": "Playfair Display",
+      "subfamily": "Italic",
+      "postscript_name": "PlayfairDisplay-Italic",
+      "variable_axes": [
+        "wght"
+      ],
+      "glyph_codepoints": 659,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "cyrillic"
+      ],
+      "license": "playfair_display/OFL.txt"
+    },
+    {
+      "path": "playfair_display/PlayfairDisplay-VariableFont_wght.ttf",
+      "bytes": 301576,
+      "sha256": "7b756032127781da7f7cc4410ec3cac50fa34b50c4e8408c5f6bf47dfd5eed83",
+      "family": "Playfair Display",
+      "subfamily": "Regular",
+      "postscript_name": "PlayfairDisplay-Regular",
+      "variable_axes": [
+        "wght"
+      ],
+      "glyph_codepoints": 659,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "cyrillic"
+      ],
+      "license": "playfair_display/OFL.txt"
+    },
+    {
+      "path": "playfair_display/static/PlayfairDisplay-Black.ttf",
+      "bytes": 193608,
+      "sha256": "33951b6bbeddb44347f1dbf0fe4e4d30f759a0048c7d5a5d900c5e1c90565ce0",
+      "family": "Playfair Display",
+      "subfamily": "Black",
+      "postscript_name": "PlayfairDisplay-Black",
+      "variable_axes": [],
+      "glyph_codepoints": 659,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "cyrillic"
+      ],
+      "license": "playfair_display/OFL.txt"
+    },
+    {
+      "path": "playfair_display/static/PlayfairDisplay-BlackItalic.ttf",
+      "bytes": 177924,
+      "sha256": "792ebee4b381acc5bce78c46ba38c491cba4e4808313c1ad6bfbe6aeead5f7f1",
+      "family": "Playfair Display",
+      "subfamily": "Black Italic",
+      "postscript_name": "PlayfairDisplay-BlackItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 659,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "cyrillic"
+      ],
+      "license": "playfair_display/OFL.txt"
+    },
+    {
+      "path": "playfair_display/static/PlayfairDisplay-Bold.ttf",
+      "bytes": 193720,
+      "sha256": "4f3b87b5aa297eed5e5a48dbd9941356ca0313d4725b02c29a298cb042b7b31b",
+      "family": "Playfair Display",
+      "subfamily": "Bold",
+      "postscript_name": "PlayfairDisplay-Bold",
+      "variable_axes": [],
+      "glyph_codepoints": 659,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "cyrillic"
+      ],
+      "license": "playfair_display/OFL.txt"
+    },
+    {
+      "path": "playfair_display/static/PlayfairDisplay-BoldItalic.ttf",
+      "bytes": 178436,
+      "sha256": "db5737059ff617317aca97e9e35730f8933a2e187c75bbe2deaf45c4d72f5b1d",
+      "family": "Playfair Display",
+      "subfamily": "Bold Italic",
+      "postscript_name": "PlayfairDisplay-BoldItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 659,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "cyrillic"
+      ],
+      "license": "playfair_display/OFL.txt"
+    },
+    {
+      "path": "playfair_display/static/PlayfairDisplay-ExtraBold.ttf",
+      "bytes": 193688,
+      "sha256": "eba64eefaeabbb7f65986c59eae2d6c0ba28fdb4e8ab6e578390af0bf1fcbbbf",
+      "family": "Playfair Display",
+      "subfamily": "ExtraBold",
+      "postscript_name": "PlayfairDisplay-ExtraBold",
+      "variable_axes": [],
+      "glyph_codepoints": 659,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "cyrillic"
+      ],
+      "license": "playfair_display/OFL.txt"
+    },
+    {
+      "path": "playfair_display/static/PlayfairDisplay-ExtraBoldItalic.ttf",
+      "bytes": 178460,
+      "sha256": "65f753e06921f90290f2e12218cb3771a5ad09f7bfd86e976f0cb57889bca45f",
+      "family": "Playfair Display",
+      "subfamily": "ExtraBold Italic",
+      "postscript_name": "PlayfairDisplay-ExtraBoldItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 659,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "cyrillic"
+      ],
+      "license": "playfair_display/OFL.txt"
+    },
+    {
+      "path": "playfair_display/static/PlayfairDisplay-Italic.ttf",
+      "bytes": 177972,
+      "sha256": "40a6afa92220254c2c426ccef129d3615dd19e4c591fbfa997e5f28ebba8302c",
+      "family": "Playfair Display",
+      "subfamily": "Italic",
+      "postscript_name": "PlayfairDisplay-Italic",
+      "variable_axes": [],
+      "glyph_codepoints": 659,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "cyrillic"
+      ],
+      "license": "playfair_display/OFL.txt"
+    },
+    {
+      "path": "playfair_display/static/PlayfairDisplay-Medium.ttf",
+      "bytes": 193784,
+      "sha256": "1801fe542af37361b26d3c042a9a57794a58a4e9a1e3948a7fa0ec26b89b43f3",
+      "family": "Playfair Display",
+      "subfamily": "Medium",
+      "postscript_name": "PlayfairDisplay-Medium",
+      "variable_axes": [],
+      "glyph_codepoints": 659,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "cyrillic"
+      ],
+      "license": "playfair_display/OFL.txt"
+    },
+    {
+      "path": "playfair_display/static/PlayfairDisplay-MediumItalic.ttf",
+      "bytes": 178452,
+      "sha256": "d9e34324aef7e5ba5fa8ab8f10af7acedd167f79e8be1ebf88eab812e9756736",
+      "family": "Playfair Display",
+      "subfamily": "Medium Italic",
+      "postscript_name": "PlayfairDisplay-MediumItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 659,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "cyrillic"
+      ],
+      "license": "playfair_display/OFL.txt"
+    },
+    {
+      "path": "playfair_display/static/PlayfairDisplay-Regular.ttf",
+      "bytes": 193380,
+      "sha256": "861f838d481d28cbbd4793e45dc02f01d04c81e06ed98ab2779ca152ace9f27b",
+      "family": "Playfair Display",
+      "subfamily": "Regular",
+      "postscript_name": "PlayfairDisplay-Regular",
+      "variable_axes": [],
+      "glyph_codepoints": 659,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "cyrillic"
+      ],
+      "license": "playfair_display/OFL.txt"
+    },
+    {
+      "path": "playfair_display/static/PlayfairDisplay-SemiBold.ttf",
+      "bytes": 193832,
+      "sha256": "0f8ae66ea018739838dac8fc0a70f9dd6fe8806bf4f63bb35b3c643480221d31",
+      "family": "Playfair Display",
+      "subfamily": "SemiBold",
+      "postscript_name": "PlayfairDisplay-SemiBold",
+      "variable_axes": [],
+      "glyph_codepoints": 659,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "cyrillic"
+      ],
+      "license": "playfair_display/OFL.txt"
+    },
+    {
+      "path": "playfair_display/static/PlayfairDisplay-SemiBoldItalic.ttf",
+      "bytes": 178528,
+      "sha256": "20fc46693b21b25f042b8542d41a1e5a86bdfdeb363e1878be05fdd7c8ad8166",
+      "family": "Playfair Display",
+      "subfamily": "SemiBold Italic",
+      "postscript_name": "PlayfairDisplay-SemiBoldItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 659,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "cyrillic"
+      ],
+      "license": "playfair_display/OFL.txt"
+    },
+    {
+      "path": "poppins/Poppins-Black.ttf",
+      "bytes": 151396,
+      "sha256": "291e4388a436cf0c0d532ce4735a4ca36bd2286912b051ea423d5c383be06cd7",
+      "family": "Poppins",
+      "subfamily": "Black",
+      "postscript_name": "Poppins-Black",
+      "variable_axes": [],
+      "glyph_codepoints": 471,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "devanagari"
+      ],
+      "license": "poppins/OFL.txt"
+    },
+    {
+      "path": "poppins/Poppins-BlackItalic.ttf",
+      "bytes": 171604,
+      "sha256": "a5e3e31e9dc6878269fdda8a968f8c0212beef9f7ef6028b6d1e02293316db7d",
+      "family": "Poppins",
+      "subfamily": "Black Italic",
+      "postscript_name": "Poppins-BlackItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 471,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "devanagari"
+      ],
+      "license": "poppins/OFL.txt"
+    },
+    {
+      "path": "poppins/Poppins-Bold.ttf",
+      "bytes": 153944,
+      "sha256": "7219547ee25334cbac0fe4b3acf0bf631e48ebb622c71af038edaaa652c60875",
+      "family": "Poppins",
+      "subfamily": "Bold",
+      "postscript_name": "Poppins-Bold",
+      "variable_axes": [],
+      "glyph_codepoints": 471,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "devanagari"
+      ],
+      "license": "poppins/OFL.txt"
+    },
+    {
+      "path": "poppins/Poppins-BoldItalic.ttf",
+      "bytes": 176588,
+      "sha256": "9d4d9f3c2c289eaec403660ec215bdc45e62b49f978807714bfc31ca7916c8fe",
+      "family": "Poppins",
+      "subfamily": "Bold Italic",
+      "postscript_name": "Poppins-BoldItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 471,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "devanagari"
+      ],
+      "license": "poppins/OFL.txt"
+    },
+    {
+      "path": "poppins/Poppins-ExtraBold.ttf",
+      "bytes": 152764,
+      "sha256": "94a215f88fbde9099cb3bd1431b8142aba26af36f8771effec56a94bc3aad1fd",
+      "family": "Poppins",
+      "subfamily": "ExtraBold",
+      "postscript_name": "Poppins-ExtraBold",
+      "variable_axes": [],
+      "glyph_codepoints": 471,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "devanagari"
+      ],
+      "license": "poppins/OFL.txt"
+    },
+    {
+      "path": "poppins/Poppins-ExtraBoldItalic.ttf",
+      "bytes": 173916,
+      "sha256": "bba986e116690660f70d3ebb18a74d8d2c8eafcda6c28c8ffc4306aa1e2b91e4",
+      "family": "Poppins",
+      "subfamily": "ExtraBold Italic",
+      "postscript_name": "Poppins-ExtraBoldItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 471,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "devanagari"
+      ],
+      "license": "poppins/OFL.txt"
+    },
+    {
+      "path": "poppins/Poppins-ExtraLight.ttf",
+      "bytes": 161456,
+      "sha256": "60c4bb1b8f272f0ac4702b962cc46e58e885a65624479be1c0646c9e37d9ce62",
+      "family": "Poppins",
+      "subfamily": "ExtraLight",
+      "postscript_name": "Poppins-ExtraLight",
+      "variable_axes": [],
+      "glyph_codepoints": 471,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "devanagari"
+      ],
+      "license": "poppins/OFL.txt"
+    },
+    {
+      "path": "poppins/Poppins-ExtraLightItalic.ttf",
+      "bytes": 186168,
+      "sha256": "05418f4d333f25ddaf359adaf39b2777e64dad0f83c3fa4502d193d0ad19a9b7",
+      "family": "Poppins",
+      "subfamily": "ExtraLight Italic",
+      "postscript_name": "Poppins-ExtraLightItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 471,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "devanagari"
+      ],
+      "license": "poppins/OFL.txt"
+    },
+    {
+      "path": "poppins/Poppins-Italic.ttf",
+      "bytes": 182012,
+      "sha256": "3225cec6a018310497ea9ee116aa43b2a833464fed6156dceb9a3a4424bb8613",
+      "family": "Poppins",
+      "subfamily": "Italic",
+      "postscript_name": "Poppins-Italic",
+      "variable_axes": [],
+      "glyph_codepoints": 471,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "devanagari"
+      ],
+      "license": "poppins/OFL.txt"
+    },
+    {
+      "path": "poppins/Poppins-Light.ttf",
+      "bytes": 159892,
+      "sha256": "647f014d36822ef7e0413ffbb65598ae0cb57fb798e635c63912c93d94eb356a",
+      "family": "Poppins",
+      "subfamily": "Light",
+      "postscript_name": "Poppins-Light",
+      "variable_axes": [],
+      "glyph_codepoints": 471,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "devanagari"
+      ],
+      "license": "poppins/OFL.txt"
+    },
+    {
+      "path": "poppins/Poppins-LightItalic.ttf",
+      "bytes": 184460,
+      "sha256": "6d00aa5531c8b8ba0934de7925985c6636c99fbc89b4c9f79629fb4a9067654f",
+      "family": "Poppins",
+      "subfamily": "Light Italic",
+      "postscript_name": "Poppins-LightItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 471,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "devanagari"
+      ],
+      "license": "poppins/OFL.txt"
+    },
+    {
+      "path": "poppins/Poppins-Medium.ttf",
+      "bytes": 156520,
+      "sha256": "8d909883de81344e0fbcfef30e931872e92d9aeecdf85b6dcf6e0b28c078e98e",
+      "family": "Poppins",
+      "subfamily": "Medium",
+      "postscript_name": "Poppins-Medium",
+      "variable_axes": [],
+      "glyph_codepoints": 471,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "devanagari"
+      ],
+      "license": "poppins/OFL.txt"
+    },
+    {
+      "path": "poppins/Poppins-MediumItalic.ttf",
+      "bytes": 180444,
+      "sha256": "449f6bd907fe29dbdfd5ef0990bdbb7fd800efa748a83f7b7529dcb94f79955b",
+      "family": "Poppins",
+      "subfamily": "Medium Italic",
+      "postscript_name": "Poppins-MediumItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 471,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "devanagari"
+      ],
+      "license": "poppins/OFL.txt"
+    },
+    {
+      "path": "poppins/Poppins-Regular.ttf",
+      "bytes": 158240,
+      "sha256": "707fdc5c8bab57a90061c6a8ed7b70d5ffb82fc810e994e79f90bace890c255a",
+      "family": "Poppins",
+      "subfamily": "Regular",
+      "postscript_name": "Poppins-Regular",
+      "variable_axes": [],
+      "glyph_codepoints": 471,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "devanagari"
+      ],
+      "license": "poppins/OFL.txt"
+    },
+    {
+      "path": "poppins/Poppins-SemiBold.ttf",
+      "bytes": 155232,
+      "sha256": "248c0244b350ec68880996aa6be6d7796274b49992d5fcbbefe251906aa4ea36",
+      "family": "Poppins",
+      "subfamily": "SemiBold",
+      "postscript_name": "Poppins-SemiBold",
+      "variable_axes": [],
+      "glyph_codepoints": 471,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "devanagari"
+      ],
+      "license": "poppins/OFL.txt"
+    },
+    {
+      "path": "poppins/Poppins-SemiBoldItalic.ttf",
+      "bytes": 178584,
+      "sha256": "74b31cbc29dc90c2d630e77673e7b6f714ff9bb01e5d424670bc61ca85b6093a",
+      "family": "Poppins",
+      "subfamily": "SemiBold Italic",
+      "postscript_name": "Poppins-SemiBoldItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 471,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "devanagari"
+      ],
+      "license": "poppins/OFL.txt"
+    },
+    {
+      "path": "poppins/Poppins-Thin.ttf",
+      "bytes": 161652,
+      "sha256": "95875f9ef0d12d5cbdd64852933a578021c810cec247f7564207e046cf6c7289",
+      "family": "Poppins",
+      "subfamily": "Thin",
+      "postscript_name": "Poppins-Thin",
+      "variable_axes": [],
+      "glyph_codepoints": 471,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "devanagari"
+      ],
+      "license": "poppins/OFL.txt"
+    },
+    {
+      "path": "poppins/Poppins-ThinItalic.ttf",
+      "bytes": 187044,
+      "sha256": "043226b0e187263ab54de3e971b663a77e52c3857cbb235c8410388db6d28de8",
+      "family": "Poppins",
+      "subfamily": "Thin Italic",
+      "postscript_name": "Poppins-ThinItalic",
+      "variable_axes": [],
+      "glyph_codepoints": 471,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "devanagari"
+      ],
+      "license": "poppins/OFL.txt"
+    },
+    {
+      "path": "reem_kufi_fun/ReemKufiFun-VariableFont_wght.ttf",
+      "bytes": 175668,
+      "sha256": "b1600ee3f8c1278d48a44fd848f4e5957423a0bee173076645e39274eba4b3ba",
+      "family": "Reem Kufi Fun",
+      "subfamily": "Regular",
+      "postscript_name": "ReemKufiFun-Regular",
+      "variable_axes": [
+        "wght"
+      ],
+      "glyph_codepoints": 667,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "arabic"
+      ],
+      "license": "reem_kufi_fun/OFL.txt"
+    },
+    {
+      "path": "reem_kufi_fun/static/ReemKufiFun-Bold.ttf",
+      "bytes": 124540,
+      "sha256": "5497907f6f0b94676d8c50330ba7129fcbaa2899a82ffabe4f712a1aa929cad2",
+      "family": "Reem Kufi Fun",
+      "subfamily": "Bold",
+      "postscript_name": "ReemKufiFun-Bold",
+      "variable_axes": [],
+      "glyph_codepoints": 667,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "arabic"
+      ],
+      "license": "reem_kufi_fun/OFL.txt"
+    },
+    {
+      "path": "reem_kufi_fun/static/ReemKufiFun-Medium.ttf",
+      "bytes": 124708,
+      "sha256": "889c382becd65923000fb26bfd80efd103567e675867b2459e5fc3af2a05927c",
+      "family": "Reem Kufi Fun",
+      "subfamily": "Medium",
+      "postscript_name": "ReemKufiFun-Medium",
+      "variable_axes": [],
+      "glyph_codepoints": 667,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "arabic"
+      ],
+      "license": "reem_kufi_fun/OFL.txt"
+    },
+    {
+      "path": "reem_kufi_fun/static/ReemKufiFun-Regular.ttf",
+      "bytes": 124524,
+      "sha256": "bdf4b1c1444f88d3ade709bf5005cd8d89444974bb0a4b26f3da7b7fadb60379",
+      "family": "Reem Kufi Fun",
+      "subfamily": "Regular",
+      "postscript_name": "ReemKufiFun-Regular",
+      "variable_axes": [],
+      "glyph_codepoints": 667,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "arabic"
+      ],
+      "license": "reem_kufi_fun/OFL.txt"
+    },
+    {
+      "path": "reem_kufi_fun/static/ReemKufiFun-SemiBold.ttf",
+      "bytes": 124752,
+      "sha256": "8f9d2f1b507517cf95d7d5d11a0522a058740c09bac7ecce48733e500f8d92c5",
+      "family": "Reem Kufi Fun",
+      "subfamily": "SemiBold",
+      "postscript_name": "ReemKufiFun-SemiBold",
+      "variable_axes": [],
+      "glyph_codepoints": 667,
+      "scripts": [
+        "latin",
+        "latin_extended",
+        "arabic"
+      ],
+      "license": "reem_kufi_fun/OFL.txt"
+    }
+  ]
+}

@@ -2,24 +2,32 @@
 
 The repository includes regular and bold faces only when redistribution terms are included with the files.
 
-| Locale family | Included family | Directory |
+| Use | Included family | Directory |
 | --- | --- | --- |
 | Latin scripts | Poppins | `assets/fonts/poppins` |
+| Editorial/display serif | Playfair Display | `assets/fonts/playfair_display` |
 | Japanese | LINE Seed JP | `assets/fonts/line_seed_jp` |
 | Thai | Kanit | `assets/fonts/kanit` |
 | Vietnamese | Be Vietnam Pro | `assets/fonts/be_vietnam_pro` |
 | Arabic | Kufam | `assets/fonts/kufam` |
+| Arabic geometric/display alternative | Reem Kufi Fun | `assets/fonts/reem_kufi_fun` |
 | Hindi and Devanagari | Noto Sans Devanagari | `assets/fonts/noto_sans_devanagari` |
 | General fallback | Noto Sans | `assets/fonts/noto_sans` |
 
-Use `assets/font-presets.json` as a starting point and override any family in the project JSON. Validate every configured path with `scripts/check_text_runtime.py`.
+The OFL families copied from project font packs include all supplied static/variable files and their license notices, not only Regular/Bold. Use `assets/font-catalog.json` to search exact family, subfamily, PostScript name, scripts, hashes, and license paths. Regenerate it after font changes:
+
+```powershell
+python scripts/index_font_assets.py assets/fonts assets/font-catalog.json
+```
+
+Use `assets/font-presets.json` as a conservative starting point and override any family in project JSON. Validate every configured path with `scripts/check_text_runtime.py`; presence in the catalog does not prove that a font is appropriate for a specific role.
 
 ## Fonts users install themselves
 
 Some useful fonts do not permit font-file redistribution or were supplied without sufficiently clear redistribution terms. They are intentionally not committed to this repository.
 
-- Chinese: download MiSans from the [official MiSans download page](https://hyperos.mi.com/font/en/download/), accept its license, and configure the local file under the `zh` key. The official agreement allows created artwork to be distributed but prohibits redistributing the font software itself.
-- Korean: obtain S-Core Dream from its official publisher or choose an OFL Korean family such as Noto Sans KR, then configure the local `ko` paths. Confirm the current license at the download source before use.
+- Chinese: MiSans may be used from a user-installed local path after accepting its license, but its font software is not bundled or committed because redistribution is prohibited.
+- Korean: S-Core Dream files found in prior local work are not bundled because no redistributable license notice accompanied that package. Obtain it from its publisher or use a confirmed open family such as Noto Sans KR.
 
 Example local override:
 
